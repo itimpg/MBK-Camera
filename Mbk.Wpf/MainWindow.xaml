@@ -1,0 +1,132 @@
+﻿<Controls:MetroWindow  
+        x:Class="Mbk.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Mbk.Wpf"
+        xmlns:converter="clr-namespace:Mbk.Wpf.Converters"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        EnableDWMDropShadow="True"
+        mc:Ignorable="d"
+        MinHeight="600"
+        MinWidth="640"
+        WindowStartupLocation="CenterScreen"
+        Title="Export Counting People &amp; Heatmap" Height="400" Width="600"
+        DataContext="{Binding Main, Source={StaticResource Locator}}">
+
+    <Window.Resources>
+        <converter:BooleanToVisibleConverter x:Key="VisibleConverter" />
+    </Window.Resources>
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="Configuration" Command="{Binding OpenConfigCommand}" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding OnLoadCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180" />
+                    <ColumnDefinition Width="420" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0" Margin="7">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Image Margin="3,3,2,2"
+                       Grid.Row="1"
+                       Source="Resources/MbkLogo.png"
+                       Height="auto"></Image>
+                </Grid>
+
+                <StackPanel Grid.Column="1" Margin="5">
+                    <Button Content="Checking System" Margin="2" 
+                        Command="{Binding CheckSystemCommand}"/>
+                    <Button Content="Get data now" Margin="2" 
+                        Command="{Binding ManualGetDataCommand}"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0">Select Date:</Label>
+                        <DatePicker Grid.Row="1" Grid.Column="0" Margin="2" 
+                                SelectedDate="{Binding ReportDate, Mode=TwoWay}"/>
+                        <Label Grid.Row="0" Grid.Column="1">Time:</Label>
+                        <ComboBox Grid.Row="1" Grid.Column="1" Margin="2" 
+                              ItemsSource="{Binding TimeList}"
+                              SelectedValue="{Binding ReportPeriod}"
+                              DisplayMemberPath="Display"
+                              SelectedValuePath="Value"/>
+                        <Label Grid.Row="1" Grid.Column="2">per day</Label>
+                    </Grid>
+                    <TextBox IsEnabled="False" Margin="2" Text="{Binding ReportLocation, Mode=OneWay}" />
+                    <Button Margin="2" Content="Export Data" Command="{Binding ExportReportCommand}"/>
+                </StackPanel>
+
+            </Grid>
+
+            <DataGrid Grid.Row="1" Grid.Column="0" Margin="0,5,0,5"
+                  BorderThickness="1" BorderBrush="Black"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding Logs}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Date" Width="120" 
+                                    Binding="{Binding LogDate, StringFormat=\{0:d/M/yyyy\}}"/>
+                    <DataGridTextColumn Header="Time" Width="120" 
+                                    Binding="{Binding LogDate, StringFormat=\{0:HH:mm\}}"/>
+                    <DataGridTextColumn Header="Description" Width="*" CanUserSort="False" 
+                                    Binding="{Binding Description}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>
+
+        <Grid Opacity="0.7" Background="White"
+              Visibility="{Binding IsLoading, Converter={StaticResource VisibleConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Controls:ProgressRing Grid.Row="1" Grid.Column="1" 
+                                   Foreground="{DynamicResource AccentColorBrush}" 
+                                   IsActive="{Binding IsLoading}"/>
+        </Grid>
+    </Grid>
+    
+</Controls:MetroWindow>
