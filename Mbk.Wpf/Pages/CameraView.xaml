@@ -52,19 +52,19 @@
                     <Label Grid.Row="0" Grid.Column="0" 
                            Content="IP Address :"/>
                     <TextBox Grid.Row="0" Grid.Column="1" Margin="2"
-                             Text="{Binding CameraObject.IpAddress}"/>
+                             Text="{Binding Camera.IpAddress}"/>
                     <Label Grid.Row="1" Grid.Column="0"
                            Content="Floor :"/>
                     <TextBox Grid.Row="1" Grid.Column="1" Margin="2"
-                             Text="{Binding CameraObject.Floor}"/>
+                             Text="{Binding Camera.Floor}"/>
                     <Label Grid.Row="2" Grid.Column="0"
                            Content="Camera Name :"/>
                     <TextBox Grid.Row="2" Grid.Column="1" Margin="2"
-                             Text="{Binding CameraObject.CameraName}"/>
+                             Text="{Binding Camera.Name}"/>
                     <Label Grid.Row="3" Grid.Column="0"
                            Content="Height :"/>
                     <Controls:NumericUpDown Grid.Row="3" Grid.Column="1" Margin="2"
-                                            Value="{Binding CameraObject.Height}"/>
+                                            Value="{Binding Camera.Height}"/>
                 </Grid>
             </Grid>
 

@@ -64,17 +64,17 @@ namespace Mbk.Business
             }
         }
 
-        public async Task<Camera> GetCameraAsync(int cameraId)
+        public async Task<CameraModel> GetCameraAsync(int cameraId)
         {
             return await _cameraRepository.GetAsync(cameraId);
         }
 
-        public async Task<IList<Camera>> GetCameraListAsync()
+        public async Task<IList<CameraModel>> GetCameraListAsync()
         {
             return await _cameraRepository.GetAsync();
         }
 
-        public async Task SaveCameraAsync(Camera camera)
+        public async Task SaveCameraAsync(CameraModel camera)
         {
             if (camera.Id == 0)
             {

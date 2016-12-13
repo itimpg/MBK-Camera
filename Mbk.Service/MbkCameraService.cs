@@ -24,7 +24,7 @@ namespace Mbk.Service
 
         private Timer _dataTimer;
         private Timer _reportTimer;
-        private Config _config;
+        private ConfigModel _config;
         #endregion
 
         #region Constructor

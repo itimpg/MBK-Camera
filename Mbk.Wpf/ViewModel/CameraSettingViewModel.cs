@@ -31,17 +31,17 @@ namespace Mbk.Wpf.ViewModel
                         IsLoading = true;
 
                         int cameraId = AppSessionModel.Instance().CameraId;
-                        Camera camera = null;
+                        CameraModel camera = null;
                         if (cameraId > 0
                             && (camera = await _cameraManager.GetCameraAsync(cameraId)) != null)
                         {
                             Title = "Edit camera";
-                            CameraObject = Mapper.Map<CameraViewModel>(camera);
+                            Camera = Mapper.Map<CameraViewModel>(camera);
                         }
                         else
                         {
                             Title = "Add new camera";
-                            CameraObject = new CameraViewModel();
+                            Camera = new CameraViewModel();
                         }
                     }
                     catch (Exception ex)
@@ -67,7 +67,7 @@ namespace Mbk.Wpf.ViewModel
                     {
                         IsLoading = true;
 
-                        var camera = Mapper.Map<Camera>(CameraObject);
+                        var camera = Mapper.Map<CameraModel>(Camera);
                         await _cameraManager.SaveCameraAsync(camera);
 
                         Messenger.Default.Send(new DataChangedNotificationMessage("Camera Changed", DataChangedType.Camera));
@@ -103,10 +103,10 @@ namespace Mbk.Wpf.ViewModel
         private ICameraManager _cameraManager;
 
         private CameraViewModel _camera;
-        public CameraViewModel CameraObject
+        public CameraViewModel Camera
         {
             get { return _camera; }
-            set { Set(() => CameraObject, ref _camera, value); }
+            set { Set(() => Camera, ref _camera, value); }
         }
 
         private string _title;
@@ -132,7 +132,7 @@ namespace Mbk.Wpf.ViewModel
             _dialogService = dialogService;
             _cameraManager = cameraManager;
 
-            CameraObject = new CameraViewModel();
+            Camera = new CameraViewModel();
         }
         #endregion
     }
@@ -160,11 +160,11 @@ namespace Mbk.Wpf.ViewModel
             set { Set(() => Floor, ref _floor, value); }
         }
 
-        private string _cameraName;
-        public string CameraName
+        private string _name;
+        public string Name
         {
-            get { return _cameraName; }
-            set { Set(() => CameraName, ref _cameraName, value); }
+            get { return _name; }
+            set { Set(() => Name, ref _name, value); }
         }
 
         private decimal _height;

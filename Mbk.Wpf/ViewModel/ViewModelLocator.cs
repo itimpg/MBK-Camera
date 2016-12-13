@@ -36,7 +36,7 @@ namespace Mbk.Wpf.ViewModel
         {
             Mapper.Initialize(cfg =>
             {
-                cfg.CreateMap<CameraViewModel, Camera>().ReverseMap();
+                cfg.CreateMap<CameraViewModel, CameraModel>().ReverseMap();
             });
 
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);

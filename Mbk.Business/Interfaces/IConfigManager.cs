@@ -4,7 +4,7 @@ namespace Mbk.Business.Interfaces
 {
     public interface IConfigManager
     {
-        Config GetConfig();
-        void SaveConfig(Config config);
+        ConfigModel GetConfig();
+        void SaveConfig(ConfigModel config);
     }
 }

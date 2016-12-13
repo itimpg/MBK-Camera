@@ -6,10 +6,10 @@ namespace Mbk.Business.Interfaces
 {
     public interface ICameraManager
     {
-        Task<IList<Camera>> GetCameraListAsync();
-        Task SaveCameraAsync(Camera camera);
+        Task<IList<CameraModel>> GetCameraListAsync();
+        Task SaveCameraAsync(CameraModel camera);
         Task<string> GetCameraStatusAsync(string ipAddress);
         Task<string> CheckCameraInSystemAsync();
-        Task<Camera> GetCameraAsync(int cameraId);
+        Task<CameraModel> GetCameraAsync(int cameraId);
     }
 }

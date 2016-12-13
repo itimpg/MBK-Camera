@@ -208,7 +208,7 @@ namespace Mbk.Wpf.ViewModel
         #region Private Method
         private void LoadConfig()
         {
-            Config config = _configManager.GetConfig();
+            ConfigModel config = _configManager.GetConfig();
             ReportLocation = config.ExportConfig.Location;
             BufferLocation = config.DataConfig.Location;
         }

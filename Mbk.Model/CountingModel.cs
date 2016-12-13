@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mbk.Model
 {
-    public class Counting
+    public class CountingModel
     {
         public int Id { get; set; }
         public DateTime DateTime { get; set; }

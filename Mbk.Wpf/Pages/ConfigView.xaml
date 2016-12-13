@@ -70,7 +70,7 @@
                     <DataGridTextColumn Binding="{Binding IpAddress}" Header="Ip Address" Width="2*"/>
                     <DataGridTextColumn Binding="{Binding Floor}" Header="Floor" Width="*"/>
                     <Controls:DataGridNumericUpDownColumn Header="Height (Meter)" Width="2*" Binding="{Binding Height}" StringFormat="n2"  Minimum="0" />
-                    <DataGridTextColumn Binding="{Binding CameraName}" Header="Camera Name" Width="2*"/>
+                    <DataGridTextColumn Binding="{Binding Name}" Header="Camera Name" Width="2*"/>
                     <DataGridTextColumn Header="Status" Width="2*" Binding="{Binding Status}" IsReadOnly="True">
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">

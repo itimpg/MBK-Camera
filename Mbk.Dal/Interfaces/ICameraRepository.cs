@@ -11,10 +11,10 @@ namespace Mbk.Dal.Interfaces
     {
         bool CheckConnection();
 
-        Task<IList<Camera>> GetAsync();
-        Task<Camera> GetAsync(int id);
-        Task InsertAsync(Camera camera);
-        Task UpdateAsync(Camera camera);
+        Task<IList<CameraModel>> GetAsync();
+        Task<CameraModel> GetAsync(int id);
+        Task InsertAsync(CameraModel camera);
+        Task UpdateAsync(CameraModel camera);
         Task DeleteAsync(int id);
     }
 }

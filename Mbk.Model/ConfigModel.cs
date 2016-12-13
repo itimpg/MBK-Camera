@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Mbk.Model
 {
-    public class Config
+    public class ConfigModel
     {
         public ScheduleConfig ExportConfig { get; set; }
         public ScheduleConfig DataConfig { get; set; }

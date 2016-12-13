@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Mbk.Model;
+using System.Data.Common;
+using AutoMapper;
 
 namespace Mbk.Dal
 {
@@ -12,12 +14,13 @@ namespace Mbk.Dal
     {
         public bool CheckConnection()
         {
-            //using (var db = new MyEntityCollection())
+            throw new NotImplementedException();
+            //using (var db = new MbkCameraDb())
             //{
             //    DbConnection conn = db.Database.Connection;
             //    try
             //    {
-            //        conn.Open();   // check the database connection
+            //        conn.Open();
             //        return true;
             //    }
             //    catch
@@ -27,29 +30,54 @@ namespace Mbk.Dal
             //}
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+            //using (var db = new MbkCameraDb())
+            //{
+            //    var camera = db.Cameras.FirstOrDefault(x => x.Id == id);
+            //    db.Cameras.Remove(camera);
+            //    await db.SaveChangesAsync();
+            //}
+        }
+
+        public async Task<IList<CameraModel>> GetAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IList<Camera>> GetAsync()
+        public async Task<CameraModel> GetAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Camera> GetAsync(int id)
+        public async Task InsertAsync(CameraModel model)
         {
             throw new NotImplementedException();
+            //using (var db = new MbkCameraDb())
+            //{
+            //    var camera = Mapper.Map<Camera>(model);
+            //    db.Cameras.Add(camera);
+            //    await db.SaveChangesAsync();
+            //}
         }
 
-        public Task InsertAsync(Camera camera)
+        public async Task UpdateAsync(CameraModel model)
         {
             throw new NotImplementedException();
-        }
+            //using (var db = new MbkCameraDb())
+            //{
+            //    var camera = db.Cameras.FirstOrDefault(x => x.Id == model.Id);
+            //    if(camera != null)
+            //    {
+            //        camera.IpAddress = model.IpAddress;
+            //        camera.Floor = model.Floor;
+            //        camera.Name = model.Name;
+            //        camera.Height = model.Height;
 
-        public Task UpdateAsync(Camera camera)
-        {
-            throw new NotImplementedException();
+            //        await db.SaveChangesAsync();
+            //    }
+            //}
         }
     }
 }

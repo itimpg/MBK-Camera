@@ -28,7 +28,7 @@ namespace Mbk.Business
             }
         }
 
-        public Config GetConfig()
+        public ConfigModel GetConfig()
         {
             var filePath = FilePath;
             var directory = BufferDirectory;
@@ -39,17 +39,17 @@ namespace Mbk.Business
                     Directory.CreateDirectory(directory);
                 }
 
-                SaveConfig(new Config
+                SaveConfig(new ConfigModel
                 {
                     DataConfig = new ScheduleConfig() { Location = directory, Period = Enums.ReportPeriodType.H1 },
                     ExportConfig = new ScheduleConfig() { Period = Enums.ReportPeriodType.H1 },
                 });
             }
 
-            return XmlHelper.LoadXml<Config>(File.ReadAllText(FilePath));
+            return XmlHelper.LoadXml<ConfigModel>(File.ReadAllText(FilePath));
         }
 
-        public void SaveConfig(Config config)
+        public void SaveConfig(ConfigModel config)
         {
             File.WriteAllText(FilePath, XmlHelper.ToXml(config));
         }
