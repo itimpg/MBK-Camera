@@ -16,6 +16,8 @@ using AutoMapper;
 using GalaSoft.MvvmLight.Ioc;
 using Mbk.Business;
 using Mbk.Business.Interfaces;
+using Mbk.Dal;
+using Mbk.Dal.Interfaces;
 using Mbk.Model;
 using Mbk.Wpf.Services;
 using Mbk.Wpf.Services.Interfaces;
@@ -37,6 +39,7 @@ namespace Mbk.Wpf.ViewModel
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<CameraViewModel, CameraModel>().ReverseMap();
+                cfg.AddProfile<ModelProfile>();
             });
 
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
@@ -46,6 +49,8 @@ namespace Mbk.Wpf.ViewModel
             SimpleIoc.Default.Register<IReportManager, ReportManager>();
             SimpleIoc.Default.Register<IConfigManager, ConfigManager>();
             SimpleIoc.Default.Register<IDataManager, DataManager>();
+
+            SimpleIoc.Default.Register<ICameraRepository, CameraRepository>();
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ConfigViewModel>();

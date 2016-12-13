@@ -14,70 +14,80 @@ namespace Mbk.Dal
     {
         public bool CheckConnection()
         {
-            throw new NotImplementedException();
-            //using (var db = new MbkCameraDb())
-            //{
-            //    DbConnection conn = db.Database.Connection;
-            //    try
-            //    {
-            //        conn.Open();
-            //        return true;
-            //    }
-            //    catch
-            //    {
-            //        return false;
-            //    }
-            //}
+            using (var db = new MbkCameraDb())
+            {
+                DbConnection conn = db.Database.Connection;
+                try
+                {
+                    conn.Open();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
 
         public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
-            //using (var db = new MbkCameraDb())
-            //{
-            //    var camera = db.Cameras.FirstOrDefault(x => x.Id == id);
-            //    db.Cameras.Remove(camera);
-            //    await db.SaveChangesAsync();
-            //}
+            using (var db = new MbkCameraDb())
+            {
+                var camera = db.Cameras.FirstOrDefault(x => x.Id == id);
+                db.Cameras.Remove(camera);
+                await db.SaveChangesAsync();
+            }
         }
 
         public async Task<IList<CameraModel>> GetAsync()
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                using (var db = new MbkCameraDb())
+                {
+                    var cameras = db.Cameras.ToList();
+                    return Mapper.Map<List<CameraModel>>(cameras);
+                }
+            });
         }
 
         public async Task<CameraModel> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() =>
+            {
+                using (var db = new MbkCameraDb())
+                {
+                    var camera = db.Cameras.FirstOrDefault(x => x.Id == id);
+                    return Mapper.Map<CameraModel>(camera);
+                }
+            });
         }
 
         public async Task InsertAsync(CameraModel model)
         {
-            throw new NotImplementedException();
-            //using (var db = new MbkCameraDb())
-            //{
-            //    var camera = Mapper.Map<Camera>(model);
-            //    db.Cameras.Add(camera);
-            //    await db.SaveChangesAsync();
-            //}
+            using (var db = new MbkCameraDb())
+            {
+                var camera = Mapper.Map<Camera>(model);
+                db.Cameras.Add(camera);
+                await db.SaveChangesAsync();
+            }
         }
 
         public async Task UpdateAsync(CameraModel model)
         {
-            throw new NotImplementedException();
-            //using (var db = new MbkCameraDb())
-            //{
-            //    var camera = db.Cameras.FirstOrDefault(x => x.Id == model.Id);
-            //    if(camera != null)
-            //    {
-            //        camera.IpAddress = model.IpAddress;
-            //        camera.Floor = model.Floor;
-            //        camera.Name = model.Name;
-            //        camera.Height = model.Height;
+            using (var db = new MbkCameraDb())
+            {
+                var camera = db.Cameras.FirstOrDefault(x => x.Id == model.Id);
+                if (camera != null)
+                {
+                    camera.IpAddress = model.IpAddress;
+                    camera.Floor = model.Floor;
+                    camera.Name = model.Name;
+                    camera.Height = model.Height;
 
-            //        await db.SaveChangesAsync();
-            //    }
-            //}
+                    await db.SaveChangesAsync();
+                }
+            }
         }
     }
 }
