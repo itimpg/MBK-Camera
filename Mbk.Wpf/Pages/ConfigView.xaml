@@ -65,8 +65,7 @@
                       SelectedItem="{Binding SelectedCamera}"
                       ItemsSource="{Binding CameraCollection}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Item" Width="50" IsReadOnly="True" CellStyle="{StaticResource NumberCell}"
-                                        Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowToIndexConverter}}" />
+                    <DataGridTextColumn Header="Item" Width="50" IsReadOnly="True" Binding="{Binding RowNumber}"/>
                     <DataGridTextColumn Binding="{Binding IpAddress}" Header="Ip Address" Width="2*"/>
                     <DataGridTextColumn Binding="{Binding Floor}" Header="Floor" Width="*"/>
                     <Controls:DataGridNumericUpDownColumn Header="Height (Meter)" Width="2*" Binding="{Binding Height}" StringFormat="n2"  Minimum="0" />

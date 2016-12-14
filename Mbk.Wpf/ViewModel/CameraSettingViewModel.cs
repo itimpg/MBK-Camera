@@ -181,5 +181,11 @@ namespace Mbk.Wpf.ViewModel
             set { Set(() => Status, ref _status, value); }
         }
 
+        private int _rowNumber;
+        public int RowNumber
+        {
+            get { return _rowNumber; }
+            set { Set(() => RowNumber, ref _rowNumber, value); }
+        }
     }
 }

@@ -346,9 +346,12 @@ namespace Mbk.Wpf.ViewModel
 
                 CameraCollection.Clear();
                 var cameras = await _cameraManager.GetCameraListAsync();
+                int i = 0;
                 foreach (var camera in cameras)
                 {
-                    CameraCollection.Add(Mapper.Map<CameraViewModel>(camera));
+                    var cam = Mapper.Map<CameraViewModel>(camera);
+                    cam.RowNumber = ++i;
+                    CameraCollection.Add(cam);
                 }
             }
             catch (Exception ex)

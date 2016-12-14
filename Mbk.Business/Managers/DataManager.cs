@@ -27,20 +27,20 @@ namespace Mbk.Business
         {
             var cameras = await _cameraRepository.GetAsync();
 
-            var heatMapTasks = cameras.Select(async x => await GetHeatMap(x.IpAddress));
-            var countingTask = cameras.Select(async x => await GetCountingAsync(x.IpAddress));
+            var heatMapTasks = cameras.Select(async x => await GetHeatMap(x.Id, x.IpAddress));
+            var countingTask = cameras.Select(async x => await GetCountingAsync(x.Id, x.IpAddress));
             var tasks = heatMapTasks.Union(countingTask);
             await Task.WhenAll(tasks);
 
             return cameras.Count;
         }
 
-        private async Task GetHeatMap(string ipAddress)
+        private async Task GetHeatMap(int cameraId, string ipAddress)
         {
             throw new NotImplementedException();
         }
 
-        private async Task GetCountingAsync(string ipAddress)
+        private async Task GetCountingAsync(int cameraId, string ipAddress)
         {
             throw new NotImplementedException();
         }
