@@ -3,21 +3,18 @@ using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Enums;
 using System;
 using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Mbk.Business
 {
     public class ReportManager : IReportManager
     {
-        private IHeatMapRepository _heatmapRepository;
-        private ICountingRepository _countingRepository;
+        private IReportRepository _reportRepository;
 
-        public ReportManager(
-            IHeatMapRepository heatMapRepository,
-            ICountingRepository countingRepository)
+        public ReportManager(IReportRepository reportRepository)
         {
-            _heatmapRepository = heatMapRepository;
-            _countingRepository = countingRepository;
+            _reportRepository = reportRepository;
         }
 
         public async Task<int> GenerateDataReportAsync(
@@ -25,11 +22,12 @@ namespace Mbk.Business
             DateTime reportDate,
             ReportPeriodType reportPeriod)
         {
-            return await Task.Run(() =>
-               {
-                   Thread.Sleep(5000);
-                   return 20;
-               });
+            var source = await _reportRepository.GetHeatMapCoutingReportAsync(reportDate, reportPeriod);
+            
+            // TODO: create Excel file 
+
+            var totalCamera = source.Select(x => x.CameraNo).Distinct().Count();
+            return totalCamera;
         }
     }
 }

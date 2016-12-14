@@ -45,6 +45,7 @@
     <Compile Include="ConfigModel.cs" />
     <Compile Include="CountingModel.cs" />
     <Compile Include="Enums\ReportPeriodType.cs" />
+    <Compile Include="HeatMapCountingReportModel.cs" />
     <Compile Include="HeatMapModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

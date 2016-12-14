@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repositories\ReportRepository.cs" />
     <Compile Include="Repositories\CountingRepository.cs" />
     <Compile Include="Repositories\HeatMapRepository.cs" />
     <Compile Include="Repositories\Interfaces\ICountingRepository.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Repositories\Interfaces\ICameraRepository.cs" />
     <Compile Include="MbkCameraDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Interfaces\IReportRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mbk.Model\Mbk.Model.csproj">
