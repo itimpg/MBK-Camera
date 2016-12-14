@@ -1,12 +1,11 @@
 ﻿using Mbk.Dal.Repositories.Interfaces;
+using Mbk.Enums;
+using Mbk.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Mbk.Model;
 using System.Globalization;
-using Mbk.Enums;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mbk.Dal
 {

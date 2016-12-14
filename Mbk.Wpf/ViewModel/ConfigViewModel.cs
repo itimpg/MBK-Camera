@@ -153,8 +153,6 @@ namespace Mbk.Wpf.ViewModel
                     {
                         IsLoading = true;
 
-                        // TODO: save all camera
-
                         var config = _configManager.GetConfig();
 
                         config.DataConfig.IsEnabled = IsAutoBuffer;

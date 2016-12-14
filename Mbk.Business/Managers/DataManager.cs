@@ -1,7 +1,6 @@
 ﻿using Mbk.Business.Interfaces;
 using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Model;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,12 +36,28 @@ namespace Mbk.Business
 
         private async Task GetHeatMap(int cameraId, string ipAddress)
         {
-            throw new NotImplementedException();
+            // TODO: Get data by command 
+            // http://admin:admin12345@192.168.13.32/cgi-bin/get_metadata?kind=heatmap_mov&mode=multi&year=2016&month=12&date=5&hour=0&days=1
+
+            // TODO: fill data to save
+            var heatMap = new HeatMapModel
+            {
+                CameraId = cameraId,
+            };
+            await _heatMapRepository.InsertAsync(heatMap);
         }
 
         private async Task GetCountingAsync(int cameraId, string ipAddress)
         {
-            throw new NotImplementedException();
+            // TODO: Get data by command
+            // http://admin:admin12345@192.168.13.32/cgi-bin/get_metadata?kind=movcnt_info&mode=multi&year=2016&month=12&date=8&hour=0&days=1
+
+            // TODO: fill data to save
+            var counting = new CountingModel
+            {
+                CameraId = cameraId,
+            };
+            await _countingRepository.InsertAsync(counting);
         }
     }
 }

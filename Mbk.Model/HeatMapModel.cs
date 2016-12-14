@@ -10,10 +10,9 @@ namespace Mbk.Model
     {
         public int Id { get; set; }
         public int CameraId { get; set; }
-        
         public DateTime DateTime { get; set; }
         public int Gmt { get; set; }
+        public string RawData { get; set; }
         public decimal Density { get; set; }
-        public CameraModel Camera { get; set; }
     }
 }
