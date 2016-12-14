@@ -70,18 +70,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pocos\Camera.cs" />
+    <Compile Include="Pocos\Counting.cs" />
+    <Compile Include="Pocos\HeatMap.cs" />
+    <Compile Include="MbkCameraDb.cs" />
     <Compile Include="Repositories\ReportRepository.cs" />
     <Compile Include="Repositories\CountingRepository.cs" />
     <Compile Include="Repositories\HeatMapRepository.cs" />
     <Compile Include="Repositories\Interfaces\ICountingRepository.cs" />
     <Compile Include="Repositories\Interfaces\IHeatMapRepository.cs" />
     <Compile Include="ModelProfile.cs" />
-    <Compile Include="Pocos\Camera.cs" />
     <Compile Include="Repositories\CameraRepository.cs" />
-    <Compile Include="Pocos\Counting.cs" />
-    <Compile Include="Pocos\HeatMap.cs" />
     <Compile Include="Repositories\Interfaces\ICameraRepository.cs" />
-    <Compile Include="MbkCameraDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Interfaces\IReportRepository.cs" />
   </ItemGroup>

@@ -49,6 +49,7 @@ namespace Mbk.Wpf.ViewModel
             SimpleIoc.Default.Register<ICameraRepository, CameraRepository>();
             SimpleIoc.Default.Register<IHeatMapRepository, HeatMapRepository>();
             SimpleIoc.Default.Register<ICountingRepository, CountingRepository>();
+            SimpleIoc.Default.Register<IReportRepository, ReportRepository>();
 
             SimpleIoc.Default.Register<ICameraManager, CameraManager>();
             SimpleIoc.Default.Register<IReportManager, ReportManager>();

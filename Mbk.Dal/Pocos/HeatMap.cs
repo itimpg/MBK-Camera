@@ -17,13 +17,16 @@ namespace Mbk.Dal
         [StringLength(2147483647)]
         public string Date { get; set; }
 
+        [Required]
         [StringLength(2147483647)]
         public string Time { get; set; }
 
-        public long? Gmt { get; set; }
+        public long Gmt { get; set; }
+
+        [Required]
+        [StringLength(2147483647)]
+        public string RawData { get; set; }
 
         public decimal Density { get; set; }
-
-        public virtual Camera Camera { get; set; }
     }
 }
