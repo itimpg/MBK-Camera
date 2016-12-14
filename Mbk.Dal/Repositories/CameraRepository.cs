@@ -1,14 +1,12 @@
-﻿using Mbk.Dal.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Mbk.Model;
 using System.Data.Common;
 using AutoMapper;
+using Mbk.Dal.Repositories.Interfaces;
 
-namespace Mbk.Dal
+namespace Mbk.Dal.Repositories
 {
     public class CameraRepository : ICameraRepository
     {

@@ -70,12 +70,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Repositories\CountingRepository.cs" />
+    <Compile Include="Repositories\HeatMapRepository.cs" />
+    <Compile Include="Repositories\Interfaces\ICountingRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IHeatMapRepository.cs" />
     <Compile Include="ModelProfile.cs" />
     <Compile Include="Pocos\Camera.cs" />
-    <Compile Include="CameraRepository.cs" />
+    <Compile Include="Repositories\CameraRepository.cs" />
     <Compile Include="Pocos\Counting.cs" />
     <Compile Include="Pocos\HeatMap.cs" />
-    <Compile Include="Interfaces\ICameraRepository.cs" />
+    <Compile Include="Repositories\Interfaces\ICameraRepository.cs" />
     <Compile Include="MbkCameraDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

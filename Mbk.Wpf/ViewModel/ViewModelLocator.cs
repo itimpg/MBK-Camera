@@ -17,7 +17,8 @@ using GalaSoft.MvvmLight.Ioc;
 using Mbk.Business;
 using Mbk.Business.Interfaces;
 using Mbk.Dal;
-using Mbk.Dal.Interfaces;
+using Mbk.Dal.Repositories;
+using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Model;
 using Mbk.Wpf.Services;
 using Mbk.Wpf.Services.Interfaces;
@@ -45,12 +46,15 @@ namespace Mbk.Wpf.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<IDialogService, DialogService>();
 
+            SimpleIoc.Default.Register<ICameraRepository, CameraRepository>();
+            SimpleIoc.Default.Register<IHeatMapRepository, HeatMapRepository>();
+            SimpleIoc.Default.Register<ICountingRepository, CountingRepository>();
+
             SimpleIoc.Default.Register<ICameraManager, CameraManager>();
             SimpleIoc.Default.Register<IReportManager, ReportManager>();
             SimpleIoc.Default.Register<IConfigManager, ConfigManager>();
             SimpleIoc.Default.Register<IDataManager, DataManager>();
 
-            SimpleIoc.Default.Register<ICameraRepository, CameraRepository>();
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ConfigViewModel>();

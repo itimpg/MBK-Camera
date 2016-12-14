@@ -95,7 +95,7 @@ namespace Mbk.Service
         private void ReportTimerCallback(object obj)
         {
             ScheduleConfig config = (ScheduleConfig)obj;
-            _reportManager.GenerateHeatMapReportAsync(config.Location).Wait();
+            _reportManager.GenerateDataReportAsync(config.Location, DateTime.Today, config.Period).Wait();
             _logger.Info($"Report was exported on {DateTime.Now}");
         }
 
