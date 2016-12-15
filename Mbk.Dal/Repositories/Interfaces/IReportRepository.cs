@@ -8,6 +8,6 @@ namespace Mbk.Dal.Repositories.Interfaces
 {
     public interface IReportRepository
     {
-        Task<IList<HeatMapCountingReportModel>> GetHeatMapCoutingReportAsync(DateTime reportDate, ReportPeriodType period);
+        Task<IList<HeatMapCountingReportHeaderModel>> GetHeatMapCoutingReportAsync(DateTime reportDate, ReportPeriodType period);
     }
 }

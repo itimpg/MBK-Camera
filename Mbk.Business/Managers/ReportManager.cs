@@ -26,7 +26,7 @@ namespace Mbk.Business
             
             // TODO: create Excel file 
 
-            var totalCamera = source.Select(x => x.CameraNo).Distinct().Count();
+            var totalCamera = source.Count();
             return totalCamera;
         }
     }

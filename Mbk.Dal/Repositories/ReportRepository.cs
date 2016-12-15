@@ -12,7 +12,7 @@ namespace Mbk.Dal
 {
     public class ReportRepository : IReportRepository
     {
-        public async Task<IList<HeatMapCountingReportModel>> GetHeatMapCoutingReportAsync(DateTime reportDate, ReportPeriodType period)
+        public async Task<IList<HeatMapCountingReportHeaderModel>> GetHeatMapCoutingReportAsync(DateTime reportDate, ReportPeriodType period)
         {
             return await Task.Run(() =>
             {
@@ -35,54 +35,59 @@ namespace Mbk.Dal
                                      Population = ct.Population
                                  };
 
-                    var checker = dbData.ToArray();
-
-                    int modValue = 1;
+                    int separateValue = 1;
                     switch (period)
                     {
-                        case ReportPeriodType.M15: modValue = 1; break;
-                        case ReportPeriodType.M30: modValue = 2; break;
-                        case ReportPeriodType.H1: modValue = 4; break;
+                        case ReportPeriodType.M15: separateValue = 1; break;
+                        case ReportPeriodType.M30: separateValue = 2; break;
+                        case ReportPeriodType.H1: separateValue = 4; break;
                     }
-                    var rawData = dbData.AsEnumerable()
-                                .Select((x, i) => new
-                                {
-                                    RowNum = i % modValue,
-                                    Id = x.Id,
-                                    CameraFloor = x.CameraFloor,
-                                    CameraName = x.CameraName,
-                                    Date = x.Date,
-                                    Time = ConvertToTime(x.Time),
-                                    Density = x.Density,
-                                    Population = x.Population
-                                }).ToArray();
+                    var cameraData = dbData
+                                    .GroupBy(x => new { x.Id, x.CameraFloor, x.CameraName, x.Date })
+                                    .AsEnumerable()
+                                    .Select((g) => new
+                                    {
+                                        Id = g.Key.Id,
+                                        CameraFloor = g.Key.CameraFloor,
+                                        CameraName = g.Key.CameraName,
+                                        Date = g.Key.Date,
+                                        Report = g
+                                            .OrderBy(x => ConvertToTime(x.Time))
+                                            .Select((x, i) => new
+                                            {
+                                                Period = i / separateValue,
+                                                Time = ConvertToTime(x.Time),
+                                                Density = x.Density,
+                                                Population = x.Population
+                                            })
+                                            .GroupBy(x => x.Period)
+                                            .Select(g2 => new
+                                            {
+                                                StartTime = g2.Min(a => a.Time),
+                                                EndTime = g2.Max(a => a.Time),
+                                                Density = g2.Sum(a => a.Density),
+                                                Population = g2.Sum(a => a.Population)
+                                            })
+                                    })
+                                    .OrderBy(x => x.Id);
 
-                    var query = rawData
-                                .GroupBy(x => new { x.RowNum, x.Id, x.CameraFloor, x.CameraName, x.Date })
-                                .Select(g => new
+                    var query = cameraData
+                                .Select((header, index) => new HeatMapCountingReportHeaderModel
                                 {
-                                    Id = g.Key.Id,
-                                    CameraFloor = g.Key.CameraFloor,
-                                    CameraName = g.Key.CameraName,
-                                    Date = g.Key.Date,
-                                    StartTime = g.Min(x => x.Time),
-                                    EndTime = g.Max(x => x.Time),
-                                    Density = g.Sum(x => x.Density),
-                                    Population = g.Sum(x => x.Population)
-                                })
-                                .OrderBy(x => x.Id).ThenBy(x => x.StartTime)
-                                .Select((x, index) => new HeatMapCountingReportModel
-                                {
-                                    CameraFloor = x.CameraFloor,
-                                    CameraName = x.CameraName,
-                                    Date = ConvertToDate(x.Date).ToString("d/MM/yyyy"),
-                                    Time = string.Format("{0}-{1}",
-                                        x.StartTime.Add(TimeSpan.FromMinutes(1)).ToString("hh\\:mm"),
-                                        x.EndTime.ToString("hh\\:mm")),
-                                    Density = x.Density,
-                                    Population = x.Population
+                                    CameraNo = index + 1,
+                                    CameraFloor = header.CameraFloor,
+                                    CameraName = header.CameraName,
+                                    Date = ConvertToDate(header.Date).ToString("d/MM/yyyy"),
+                                    Details = header.Report.Select(detail => new HeatMapCountingReportDetailModel
+                                    {
+                                        Time = string.Format("{0}-{1}",
+                                            detail.StartTime.Add(TimeSpan.FromMinutes(1)).ToString("hh\\:mm"),
+                                            detail.EndTime.Add(TimeSpan.FromMinutes(15)).ToString("hh\\:mm")),
+                                        Density = detail.Density,
+                                        Population = detail.Population
+                                    }).ToList()
                                 });
-                    
+
                     return query.ToList();
                 }
             });
