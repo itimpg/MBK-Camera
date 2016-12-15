@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Model;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mbk.Dal.Repositories
 {
@@ -13,7 +14,13 @@ namespace Mbk.Dal.Repositories
             using (var db = new MbkCameraDb())
             {
                 var countings = Mapper.Map<IEnumerable<Counting>>(models);
-                db.Countings.AddRange(countings);
+                foreach (var obj in countings)
+                {
+                    if (!db.Countings.Any(x => x.CameraId == obj.CameraId && x.Date == obj.Date && x.Time == obj.Time))
+                    {
+                        db.Countings.Add(obj);
+                    }
+                }
                 await db.SaveChangesAsync();
             }
         }

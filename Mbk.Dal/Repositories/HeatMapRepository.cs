@@ -2,6 +2,7 @@
 using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Model;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Mbk.Dal.Repositories
@@ -13,7 +14,13 @@ namespace Mbk.Dal.Repositories
             using (var db = new MbkCameraDb())
             {
                 var heatMaps = Mapper.Map<IEnumerable<HeatMap>>(models);
-                db.HeatMaps.AddRange(heatMaps);
+                foreach (var obj in heatMaps)
+                {
+                    if (!db.HeatMaps.Any(x => x.CameraId == obj.CameraId && x.Date == obj.Date && x.Time == obj.Time))
+                    {
+                        db.HeatMaps.Add(obj);
+                    }
+                }
                 await db.SaveChangesAsync();
             }
         }
