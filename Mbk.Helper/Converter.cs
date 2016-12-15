@@ -41,7 +41,7 @@ namespace Mbk.Helper
 
         public static string ToTimeString(TimeSpan input)
         {
-            return ((input.Hours < 0) ? "-" : "+") + input.ToString("HHmm");
+            return ((input.Hours < 0) ? "-" : "+") + input.ToString("hhmm");
         }
     }
 }
