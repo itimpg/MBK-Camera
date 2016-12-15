@@ -86,16 +86,18 @@
     <Compile Include="Repositories\Interfaces\IReportRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mbk.Helper\Mbk.Helper.csproj">
+      <Project>{9a28422e-d32d-4934-8b1d-d8f3d60c5351}</Project>
+      <Name>Mbk.Helper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mbk.Model\Mbk.Model.csproj">
       <Project>{bddb05e2-2b13-4af5-b3c5-17ddcb8bc972}</Project>
       <Name>Mbk.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="mbk_camera.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="mbk_camera.db" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

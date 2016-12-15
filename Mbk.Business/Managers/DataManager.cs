@@ -4,8 +4,8 @@ using Mbk.Model;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-using System.Globalization;
 using System.IO;
+using static Mbk.Helper.Converter;
 
 namespace Mbk.Business
 {
@@ -29,54 +29,13 @@ namespace Mbk.Business
         {
             var cameras = await _cameraRepository.GetAsync();
 
-            var heatMapTasks = cameras.Select(async x => await GetHeatMap(x.Id, x.IpAddress));
-            var countingTask = cameras.Select(async x => await GetCountingAsync(x.Id, x.IpAddress));
-            var tasks = heatMapTasks.Union(countingTask);
-            await Task.WhenAll(tasks);
+            foreach (var cam in cameras)
+            {
+                await GetHeatMap(cam.Id, cam.IpAddress);
+                await GetCountingAsync(cam.Id, cam.IpAddress);
+            }
 
             return cameras.Count();
-        }
-
-        private async Task GetHeatMap(int cameraId, string ipAddress)
-        {
-            string[] texts = (await GetHeatMapFile(ipAddress))
-                .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
-
-            var periods =
-                texts.Select(x => x
-                        .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
-                    .Where(x => x.Length > 1)
-                    .Select(x => new
-                    {
-                        Gmt = x[3].Split(',')[5],
-                        DateTime = DateTime.ParseExact(
-                            string.Join(" ", x[3].Split(',').Take(2)),
-                            "yyyyMMdd HHmm", CultureInfo.InvariantCulture),
-                        Raw = string.Join(Environment.NewLine, x.Skip(4)),
-                        Value = string.Join(Environment.NewLine, x.Skip(4))
-                            .Split(new[] { Environment.NewLine, "," }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(a =>
-                            {
-                                decimal value = 0;
-                                decimal.TryParse(a, out value);
-                                return value;
-                            })
-                            .Where(a => a > 0).ToArray()
-                    }).Select(x => new
-                    {
-                        Gmt = x.Gmt.StartsWith("-") ?
-                            TimeSpan.Parse(x.Gmt.Remove(0, 1)).Negate() :
-                            TimeSpan.Parse(x.Gmt.Remove(0, 1)),
-                        DateTime = x.DateTime,
-                        RawData = x.Raw,
-                        Density = x.Value.Length > 0 ? x.Value.Sum() / x.Value.Length : 0,
-                    });
-
-            var heatMap = new HeatMapModel
-            {
-                CameraId = cameraId,
-            };
-            await _heatMapRepository.InsertAsync(heatMap);
         }
 
         private async Task<string> GetHeatMapFile(string ipAddress)
@@ -88,6 +47,36 @@ namespace Mbk.Business
                 return File.ReadAllText(@"D:\mbk\heatmap.txt");
             });
         }
+        private async Task GetHeatMap(int cameraId, string ipAddress)
+        {
+            string[] texts = (await GetHeatMapFile(ipAddress))
+                .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
+
+            var heatmaps =
+                texts.Select(x => x
+                        .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                    .Where(x => x.Length > 1)
+                    .Select(x => new
+                    {
+                        Gmt = ConvertToTime(x[3].Split(',')[5]),
+                        DateTime = ConvertToDateTime(string.Join(" ", x[3].Split(',').Take(2))),
+                        Raw = string.Join(Environment.NewLine, x.Skip(4)),
+                        Value = string.Join(Environment.NewLine, x.Skip(4))
+                            .Split(new[] { Environment.NewLine, "," }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(decimal.Parse)
+                            .Where(a => a > 0).ToArray()
+                    }).Select(x => new HeatMapModel
+                    {
+                        CameraId = cameraId,
+                        Gmt = x.Gmt,
+                        DateTime = x.DateTime,
+                        //RawData = x.Raw,
+                        RawData = "Leave it empty",
+                        Density = x.Value.Length > 0 ? x.Value.Sum() / x.Value.Length : 0,
+                    }).ToArray();
+            await _heatMapRepository.InsertAsync(heatmaps);
+        }
+
         private async Task<string> GetCountingFile(string ipAddress)
         {
             // TODO: Get data by command
@@ -97,46 +86,28 @@ namespace Mbk.Business
                 return File.ReadAllText(@"D:\mbk\counting.txt");
             });
         }
-
         private async Task GetCountingAsync(int cameraId, string ipAddress)
         {
             string[] texts = (await GetHeatMapFile(ipAddress))
                .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
-            var periods =
-                texts.Select(x => x
-                        .Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            var countings =
+                texts.Select(x => x.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     .Where(x => x.Length > 1)
-                    .Select(x => new
+                    .Select(x => new CountingModel
                     {
-                        Gmt = x[3].Split(',')[5],
-                        DateTime = DateTime.ParseExact(
-                            string.Join(" ", x[3].Split(',').Take(2)),
-                            "yyyyMMdd HHmm", CultureInfo.InvariantCulture),
-                        Raw = string.Join(Environment.NewLine, x.Skip(4)),
-                        Value = x.Skip(4)
-                            .Select(a =>
-                            {
-                                var items = a.Split(',').Select(decimal.Parse).ToArray();
-                                return items[4] - items[5];
-                            })
-                            .Sum()
-                    })
-                    .Select(x => new
-                    {
-                        Gmt = x.Gmt.StartsWith("-") ?
-                            TimeSpan.Parse(x.Gmt.Remove(0, 1)).Negate() :
-                            TimeSpan.Parse(x.Gmt.Remove(0, 1)),
-                        DateTime = x.DateTime,
-                        RawData = x.Raw,
-                        Population = x.Value,
-                    });
-
-            var counting = new CountingModel
-            {
-                CameraId = cameraId,
-            };
-            await _countingRepository.InsertAsync(counting);
+                        CameraId = cameraId,
+                        Gmt = ConvertToTime(x[3].Split(',')[5]),
+                        DateTime = ConvertToDateTime(string.Join(" ", x[3].Split(',').Take(2))),
+                        //RawData = string.Join(Environment.NewLine, x.Skip(4)),
+                        RawData = "Leave it empty",
+                        Population = x.Skip(4).Sum(a =>
+                        {
+                            var items = a.Split(',').Select(decimal.Parse).ToArray();
+                            return items[4] - items[5];
+                        })
+                    }).ToArray();
+            await _countingRepository.InsertAsync(countings);
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Enums;
+using Mbk.Helper;
 using Mbk.Model;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using static Mbk.Helper.Converter;
 
 namespace Mbk.Dal
 {
@@ -17,10 +18,11 @@ namespace Mbk.Dal
             {
                 using (var db = new MbkCameraDb())
                 {
-                    string queryDate = reportDate.ToString("yyyy-MM-dd");
+                    string queryDate = ToDateString(reportDate);
                     var dbData = from cam in db.Cameras
                                  join hm in db.HeatMaps on cam.Id equals hm.CameraId
-                                 join ct in db.Countings on new { CameraId = cam.Id, Date = hm.Date } equals new { CameraId = ct.CameraId, Date = ct.Date }
+                                 join ct in db.Countings on new { CameraId = cam.Id, Date = hm.Date, Time = hm.Time }
+                                    equals new { CameraId = ct.CameraId, Date = ct.Date, ct.Time }
                                  where ct.Date == queryDate
                                  select new
                                  {
@@ -32,6 +34,8 @@ namespace Mbk.Dal
                                      Density = hm.Density,
                                      Population = ct.Population
                                  };
+
+                    var checker = dbData.ToArray();
 
                     int modValue = 1;
                     switch (period)
@@ -47,11 +51,11 @@ namespace Mbk.Dal
                                     Id = x.Id,
                                     CameraFloor = x.CameraFloor,
                                     CameraName = x.CameraName,
-                                    Date = DateTime.ParseExact(x.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                                    Time = TimeSpan.ParseExact(x.Time, "HH:MM:ss", CultureInfo.InvariantCulture),
+                                    Date = x.Date,
+                                    Time = ConvertToTime(x.Time),
                                     Density = x.Density,
                                     Population = x.Population
-                                });
+                                }).ToArray();
 
                     var query = rawData
                                 .GroupBy(x => new { x.RowNum, x.Id, x.CameraFloor, x.CameraName, x.Date })
@@ -71,14 +75,14 @@ namespace Mbk.Dal
                                 {
                                     CameraFloor = x.CameraFloor,
                                     CameraName = x.CameraName,
-                                    Date = x.Date.ToString("d/MM/yyyy"),
+                                    Date = ConvertToDate(x.Date).ToString("d/MM/yyyy"),
                                     Time = string.Format("{0}-{1}",
-                                        x.StartTime.Add(TimeSpan.FromMinutes(1)).ToString("HH:mm"),
-                                        x.EndTime.ToString("HH:mm")),
+                                        x.StartTime.Add(TimeSpan.FromMinutes(1)).ToString("hh\\:mm"),
+                                        x.EndTime.ToString("hh\\:mm")),
                                     Density = x.Density,
                                     Population = x.Population
                                 });
-
+                    
                     return query.ToList();
                 }
             });

@@ -21,7 +21,9 @@ namespace Mbk.Dal
         [StringLength(2147483647)]
         public string Time { get; set; }
 
-        public long Gmt { get; set; }
+        [Required]
+        [StringLength(2147483647)]
+        public string Gmt { get; set; }
 
         [Required]
         [StringLength(2147483647)]
