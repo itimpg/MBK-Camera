@@ -41,6 +41,8 @@ namespace Mbk.Business
 
                 SaveConfig(new ConfigModel
                 {
+                    Username = "admin",
+                    Password = "admin12345",
                     DataConfig = new ScheduleConfig() { Location = directory, Period = Enums.ReportPeriodType.H1 },
                     ExportConfig = new ScheduleConfig() { Period = Enums.ReportPeriodType.H1 },
                 });
@@ -60,7 +62,7 @@ namespace Mbk.Business
         public static string ToXml<T>(T obj)
             where T : class
         {
-            var stringwriter = new System.IO.StringWriter();
+            var stringwriter = new StringWriter();
             var serializer = new XmlSerializer(typeof(T));
             serializer.Serialize(stringwriter, obj);
             return stringwriter.ToString();
@@ -69,7 +71,7 @@ namespace Mbk.Business
         public static T LoadXml<T>(string xmlText)
             where T : class
         {
-            var stringReader = new System.IO.StringReader(xmlText);
+            var stringReader = new StringReader(xmlText);
             var serializer = new XmlSerializer(typeof(T));
             return serializer.Deserialize(stringReader) as T;
         }

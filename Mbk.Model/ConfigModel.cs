@@ -1,14 +1,12 @@
 ﻿using Mbk.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mbk.Model
 {
     public class ConfigModel
     {
+        public string Username { get; set; }
+        public string Password { get; set; }
+
         public ScheduleConfig ExportConfig { get; set; }
         public ScheduleConfig DataConfig { get; set; }
     }

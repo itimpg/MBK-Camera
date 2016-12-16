@@ -11,15 +11,18 @@ namespace Mbk.Business
 {
     public class DataManager : IDataManager
     {
+        private IConfigManager _configManager;
         private ICameraRepository _cameraRepository;
         private IHeatMapRepository _heatMapRepository;
         private ICountingRepository _countingRepository;
 
         public DataManager(
+            IConfigManager configManager,
             ICameraRepository cameraRepository,
             IHeatMapRepository heatMapRepository,
             ICountingRepository countingRepository)
         {
+            _configManager = configManager;
             _cameraRepository = cameraRepository;
             _heatMapRepository = heatMapRepository;
             _countingRepository = countingRepository;
@@ -40,6 +43,8 @@ namespace Mbk.Business
 
         private async Task<string> GetHeatMapFile(string ipAddress)
         {
+            _configManager.GetConfig();
+
             // TODO: Get data by command 
             // http://admin:admin12345@192.168.13.32/cgi-bin/get_metadata?kind=heatmap_mov&mode=multi&year=2016&month=12&date=5&hour=0&days=1
             return await Task.Run(() =>
@@ -79,6 +84,8 @@ namespace Mbk.Business
 
         private async Task<string> GetCountingFile(string ipAddress)
         {
+            _configManager.GetConfig();
+
             // TODO: Get data by command
             // http://admin:admin12345@192.168.13.32/cgi-bin/get_metadata?kind=movcnt_info&mode=multi&year=2016&month=12&date=8&hour=0&days=1
             return await Task.Run(() =>
