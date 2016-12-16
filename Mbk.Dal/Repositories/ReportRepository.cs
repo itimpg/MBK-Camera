@@ -21,8 +21,8 @@ namespace Mbk.Dal
                     string queryDate = ToDateString(reportDate);
                     var dbData = from cam in db.Cameras
                                  join hm in db.HeatMaps on cam.Id equals hm.CameraId
-                                 join ct in db.Countings on new { CameraId = cam.Id, Date = hm.Date, Time = hm.Time }
-                                    equals new { CameraId = ct.CameraId, Date = ct.Date, ct.Time }
+                                 join ct in db.Countings on new { CameraId = cam.Id, Date = hm.Date, Time = hm.Time, Gmt = hm.Gmt }
+                                    equals new { CameraId = ct.CameraId, Date = ct.Date, ct.Time, ct.Gmt }
                                  where ct.Date == queryDate
                                  select new
                                  {
@@ -32,7 +32,8 @@ namespace Mbk.Dal
                                      Date = ct.Date,
                                      Time = ct.Time,
                                      Density = hm.Density,
-                                     Population = ct.Population
+                                     Population = ct.Population,
+                                     Gmt = ct.Gmt
                                  };
 
                     int separateValue = 1;
@@ -52,14 +53,14 @@ namespace Mbk.Dal
                                         CameraName = g.Key.CameraName,
                                         Date = g.Key.Date,
                                         Report = g
-                                            .OrderBy(x => ConvertToTime(x.Time))
                                             .Select((x, i) => new
                                             {
                                                 Period = i / separateValue,
-                                                Time = ConvertToTime(x.Time),
+                                                Time = ConvertToTime(x.Time).Add(ConvertToTime(x.Gmt)),
                                                 Density = x.Density,
                                                 Population = x.Population
                                             })
+                                            .OrderBy(x => x.Time)
                                             .GroupBy(x => x.Period)
                                             .Select(g2 => new
                                             {
