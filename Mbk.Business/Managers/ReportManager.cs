@@ -1,15 +1,14 @@
 ﻿using Mbk.Business.Interfaces;
 using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Enums;
-using System;
-using System.Threading;
-using System.Linq;
-using System.Threading.Tasks;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
-using System.IO;
 using OfficeOpenXml.Style;
+using System;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Mbk.Business
 {
@@ -95,7 +94,7 @@ namespace Mbk.Business
                     newCamRowIndex = rowIndex;
                 }
                 
-                string filename = string.Format("CameraReport_{0}_{1}_Per.xlsx",
+                string filename = string.Format("CameraReport_{0}_Per_{1}.xlsx",
                     reportDate.ToString("yyyyMMdd"),
                     reportPeriod == ReportPeriodType.M15 ? "15Minutes" : (reportPeriod == ReportPeriodType.M30 ? "30Minutes" : "1Hour"));
                 string exportFullPath = Path.Combine(reportLocation, filename);

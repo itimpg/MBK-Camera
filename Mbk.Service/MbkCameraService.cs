@@ -11,6 +11,10 @@ using log4net;
 using System.Threading;
 using Mbk.Business.Interfaces;
 using Mbk.Model;
+using Mbk.Business;
+using Mbk.Dal.Repositories.Interfaces;
+using Mbk.Dal;
+using Mbk.Dal.Repositories;
 
 namespace Mbk.Service
 {
@@ -31,10 +35,17 @@ namespace Mbk.Service
         public MbkCameraService()
         {
             InitializeComponent();
-            // TODO: implement interfaces
-            // _configManager
-            // _dataManager
-            // _reportManager
+            string connectionString = @"data source=‪C:\Users\itim\Desktop\mbk_camera.db";
+
+            _configManager = new ConfigManager();
+           
+            ICameraRepository cameraRepository = new CameraRepository(connectionString);
+            IHeatMapRepository heatMapRepository = new HeatMapRepository(connectionString);
+            ICountingRepository countingRepository = new CountingRepository(connectionString);
+            _dataManager = new DataManager(_configManager, cameraRepository, heatMapRepository, countingRepository);
+
+            IReportRepository reportRepository = new ReportRepository(connectionString);
+            _reportManager = new ReportManager(reportRepository);
         }
         #endregion
 

@@ -8,11 +8,16 @@ using Mbk.Dal.Repositories.Interfaces;
 
 namespace Mbk.Dal.Repositories
 {
-    public class CameraRepository : ICameraRepository
+    public class CameraRepository : BaseRepository, ICameraRepository
     {
+        public CameraRepository(string connectionString)
+            : base(connectionString)
+        {
+        }
+
         public bool CheckConnection()
         {
-            using (var db = new MbkCameraDb())
+            using (var db = new MbkCameraDb(ConnectionString))
             {
                 DbConnection conn = db.Database.Connection;
                 try
@@ -29,7 +34,7 @@ namespace Mbk.Dal.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            using (var db = new MbkCameraDb())
+            using (var db = new MbkCameraDb(ConnectionString))
             {
                 var camera = db.Cameras.FirstOrDefault(x => x.Id == id);
                 db.Cameras.Remove(camera);
@@ -41,7 +46,7 @@ namespace Mbk.Dal.Repositories
         {
             return await Task.Run(() =>
             {
-                using (var db = new MbkCameraDb())
+                using (var db = new MbkCameraDb(ConnectionString))
                 {
                     var cameras = db.Cameras.ToList();
                     return Mapper.Map<List<CameraModel>>(cameras);
@@ -53,7 +58,7 @@ namespace Mbk.Dal.Repositories
         {
             return await Task.Run(() =>
             {
-                using (var db = new MbkCameraDb())
+                using (var db = new MbkCameraDb(ConnectionString))
                 {
                     var camera = db.Cameras.FirstOrDefault(x => x.Id == id);
                     return Mapper.Map<CameraModel>(camera);
@@ -63,7 +68,7 @@ namespace Mbk.Dal.Repositories
 
         public async Task InsertAsync(CameraModel model)
         {
-            using (var db = new MbkCameraDb())
+            using (var db = new MbkCameraDb(ConnectionString))
             {
                 var camera = Mapper.Map<Camera>(model);
                 db.Cameras.Add(camera);
@@ -73,7 +78,7 @@ namespace Mbk.Dal.Repositories
 
         public async Task UpdateAsync(CameraModel model)
         {
-            using (var db = new MbkCameraDb())
+            using (var db = new MbkCameraDb(ConnectionString))
             {
                 var camera = db.Cameras.FirstOrDefault(x => x.Id == model.Id);
                 if (camera != null)

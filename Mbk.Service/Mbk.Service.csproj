@@ -83,6 +83,10 @@
       <Project>{3620b489-720a-4dd1-8290-41beba0708ef}</Project>
       <Name>Mbk.Business</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Mbk.Dal\Mbk.Dal.csproj">
+      <Project>{eff47865-6649-4840-9d6b-25e61ce6c60e}</Project>
+      <Name>Mbk.Dal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mbk.Model\Mbk.Model.csproj">
       <Project>{bddb05e2-2b13-4af5-b3c5-17ddcb8bc972}</Project>
       <Name>Mbk.Model</Name>

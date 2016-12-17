@@ -1,6 +1,5 @@
 ﻿using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Enums;
-using Mbk.Helper;
 using Mbk.Model;
 using System;
 using System.Collections.Generic;
@@ -8,15 +7,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Mbk.Helper.Converter;
 
-namespace Mbk.Dal
+namespace Mbk.Dal.Repositories
 {
-    public class ReportRepository : IReportRepository
+    public class ReportRepository : BaseRepository, IReportRepository
     {
+        public ReportRepository(string connectionString)
+            : base(connectionString)
+        {
+        }
+
         public async Task<IList<HeatMapCountingReportHeaderModel>> GetHeatMapCoutingReportAsync(DateTime reportDate, ReportPeriodType period)
         {
             return await Task.Run(() =>
             {
-                using (var db = new MbkCameraDb())
+                using (var db = new MbkCameraDb(ConnectionString))
                 {
                     string queryDate = ToDateString(reportDate);
                     var dbData = from cam in db.Cameras

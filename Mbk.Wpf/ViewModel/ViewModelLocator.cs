@@ -46,16 +46,29 @@ namespace Mbk.Wpf.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<IDialogService, DialogService>();
 
-            SimpleIoc.Default.Register<ICameraRepository, CameraRepository>();
-            SimpleIoc.Default.Register<IHeatMapRepository, HeatMapRepository>();
-            SimpleIoc.Default.Register<ICountingRepository, CountingRepository>();
-            SimpleIoc.Default.Register<IReportRepository, ReportRepository>();
+            string connectionString = @"data source=C:\Users\itim\Desktop\mbk_camera.db";
+
+            SimpleIoc.Default.Register<ICameraRepository>(() =>
+            {
+                return new CameraRepository(connectionString);
+            });
+            SimpleIoc.Default.Register<IHeatMapRepository>(() =>
+            {
+                return new HeatMapRepository(connectionString);
+            });
+            SimpleIoc.Default.Register<ICountingRepository>(() =>
+            {
+                return new CountingRepository(connectionString);
+            });
+            SimpleIoc.Default.Register<IReportRepository>(() =>
+            {
+                return new ReportRepository(connectionString);
+            });
 
             SimpleIoc.Default.Register<ICameraManager, CameraManager>();
             SimpleIoc.Default.Register<IReportManager, ReportManager>();
             SimpleIoc.Default.Register<IConfigManager, ConfigManager>();
             SimpleIoc.Default.Register<IDataManager, DataManager>();
-
 
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ConfigViewModel>();

@@ -74,6 +74,7 @@
     <Compile Include="Pocos\Counting.cs" />
     <Compile Include="Pocos\HeatMap.cs" />
     <Compile Include="MbkCameraDb.cs" />
+    <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\ReportRepository.cs" />
     <Compile Include="Repositories\CountingRepository.cs" />
     <Compile Include="Repositories\HeatMapRepository.cs" />

@@ -1,15 +1,14 @@
 namespace Mbk.Dal
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
+    using System.Data.SQLite;
 
     public partial class MbkCameraDb : DbContext
     {
-        public MbkCameraDb()
-            : base("name=MbkCameraDb")
+        public MbkCameraDb(string connectionString)
+             : base(new SQLiteConnection() { ConnectionString = connectionString }, true)
         {
+
         }
 
         public virtual DbSet<Camera> Cameras { get; set; }

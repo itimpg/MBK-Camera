@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace Mbk.Dal.Repositories
 {
-    public class CountingRepository : ICountingRepository
+    public class CountingRepository : BaseRepository, ICountingRepository
     {
+        public CountingRepository(string connectionString)
+            : base(connectionString)
+        {
+        }
+
         public async Task InsertAsync(IEnumerable<CountingModel> models)
         {
-            using (var db = new MbkCameraDb())
+            using (var db = new MbkCameraDb(ConnectionString))
             {
                 var countings = Mapper.Map<IEnumerable<Counting>>(models);
                 foreach (var obj in countings)

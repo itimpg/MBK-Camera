@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace Mbk.Dal.Repositories
 {
-    public class HeatMapRepository : IHeatMapRepository
+    public class HeatMapRepository : BaseRepository, IHeatMapRepository
     {
+        public HeatMapRepository(string connectionString) 
+            : base(connectionString)
+        {
+        }
+
         public async Task InsertAsync(IEnumerable<HeatMapModel> models)
         {
-            using (var db = new MbkCameraDb())
+            using (var db = new MbkCameraDb(ConnectionString))
             {
                 var heatMaps = Mapper.Map<IEnumerable<HeatMap>>(models);
                 foreach (var obj in heatMaps)
