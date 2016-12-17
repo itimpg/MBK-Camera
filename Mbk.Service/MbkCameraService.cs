@@ -25,6 +25,7 @@ namespace Mbk.Service
         private IConfigManager _configManager;
         private IDataManager _dataManager;
         private IReportManager _reportManager;
+        private ICameraManager _cameraManager;
 
         private Timer _dataTimer;
         private Timer _reportTimer;
@@ -39,13 +40,15 @@ namespace Mbk.Service
             _configManager = new ConfigManager();
             string connectionString = _configManager.GetConfig().DatabaseSource;
 
-            ICameraRepository cameraRepository = new CameraRepository(connectionString);
             IHeatMapRepository heatMapRepository = new HeatMapRepository(connectionString);
             ICountingRepository countingRepository = new CountingRepository(connectionString);
-            _dataManager = new DataManager(_configManager, cameraRepository, heatMapRepository, countingRepository);
+            _dataManager = new DataManager(heatMapRepository, countingRepository);
 
             IReportRepository reportRepository = new ReportRepository(connectionString);
             _reportManager = new ReportManager(reportRepository);
+
+            ICameraRepository cameraRepository = new CameraRepository(connectionString);
+            _cameraManager = new CameraManager(cameraRepository);
         }
         #endregion
 
@@ -99,7 +102,11 @@ namespace Mbk.Service
         private void DataCollectingTimerCallback(object obj)
         {
             ScheduleConfig config = (ScheduleConfig)obj;
-            _dataManager.CollectDataAsync(config.Location).Wait();
+            var cameras = _cameraManager.GetCameraListAsync().Result;
+            foreach (var cam in cameras)
+            {
+                _dataManager.CollectDataAsync(config.Location, cam).Wait();
+            }
             _logger.Info($"Data was collected on {DateTime.Now}");
         }
 

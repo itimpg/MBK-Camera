@@ -87,7 +87,20 @@ namespace Mbk.Wpf.ViewModel
                    try
                    {
                        IsLoading = true;
-                       int totalCamera = await _dataManager.CollectDataAsync(BufferLocation);
+                       var cameras = await _cameraManager.GetCameraListAsync();
+                       int totalCamera = 0;
+                       foreach (var cam in cameras)
+                       {
+                           try
+                           {
+                               await _dataManager.CollectDataAsync(BufferLocation, cam);
+                               totalCamera++;
+                           }
+                           catch (Exception)
+                           {
+                               continue;
+                           }
+                       }
                        Logs.Insert(0, new SystemLogViewModel { LogDate = DateTime.Now, Description = $"Get data finish {totalCamera} camera(s)" });
                    }
                    catch (Exception ex)

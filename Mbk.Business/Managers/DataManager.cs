@@ -11,40 +11,25 @@ namespace Mbk.Business
 {
     public class DataManager : IDataManager
     {
-        private IConfigManager _configManager;
-        private ICameraRepository _cameraRepository;
         private IHeatMapRepository _heatMapRepository;
         private ICountingRepository _countingRepository;
 
         public DataManager(
-            IConfigManager configManager,
-            ICameraRepository cameraRepository,
             IHeatMapRepository heatMapRepository,
             ICountingRepository countingRepository)
         {
-            _configManager = configManager;
-            _cameraRepository = cameraRepository;
             _heatMapRepository = heatMapRepository;
             _countingRepository = countingRepository;
         }
 
-        public async Task<int> CollectDataAsync(string location)
+        public async Task CollectDataAsync(string location, CameraModel camera)
         {
-            var cameras = await _cameraRepository.GetAsync();
-
-            foreach (var cam in cameras)
-            {
-                await GetHeatMap(cam.Id, cam.IpAddress);
-                await GetCountingAsync(cam.Id, cam.IpAddress);
-            }
-
-            return cameras.Count();
+            await GetHeatMap(location, camera.Id, camera.IpAddress);
+            await GetCountingAsync(location, camera.Id, camera.IpAddress);
         }
 
-        private async Task<string> GetHeatMapFile(string ipAddress)
+        private async Task<string> GetHeatMapFile(string location, string ipAddress)
         {
-            _configManager.GetConfig();
-
             // TODO: Get data by command 
             // http://admin:admin12345@192.168.13.32/cgi-bin/get_metadata?kind=heatmap_mov&mode=multi&year=2016&month=12&date=5&hour=0&days=1
             return await Task.Run(() =>
@@ -52,9 +37,9 @@ namespace Mbk.Business
                 return File.ReadAllText(@"D:\mbk\heatmap.txt");
             });
         }
-        private async Task GetHeatMap(int cameraId, string ipAddress)
+        private async Task GetHeatMap(string location, int cameraId, string ipAddress)
         {
-            string[] texts = (await GetHeatMapFile(ipAddress))
+            string[] texts = (await GetHeatMapFile(location, ipAddress))
                 .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var heatmaps =
@@ -82,10 +67,8 @@ namespace Mbk.Business
             await _heatMapRepository.InsertAsync(heatmaps);
         }
 
-        private async Task<string> GetCountingFile(string ipAddress)
+        private async Task<string> GetCountingFile(string location, string ipAddress)
         {
-            _configManager.GetConfig();
-
             // TODO: Get data by command
             // http://admin:admin12345@192.168.13.32/cgi-bin/get_metadata?kind=movcnt_info&mode=multi&year=2016&month=12&date=8&hour=0&days=1
             return await Task.Run(() =>
@@ -93,9 +76,9 @@ namespace Mbk.Business
                 return File.ReadAllText(@"D:\mbk\counting.txt");
             });
         }
-        private async Task GetCountingAsync(int cameraId, string ipAddress)
+        private async Task GetCountingAsync(string location, int cameraId, string ipAddress)
         {
-            string[] texts = (await GetHeatMapFile(ipAddress))
+            string[] texts = (await GetHeatMapFile(location, ipAddress))
                .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var countings =
