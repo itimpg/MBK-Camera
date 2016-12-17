@@ -54,8 +54,8 @@ namespace Mbk.Business
                     DatabaseSource = DefaultDatabaseFile,
                     Username = "admin",
                     Password = "admin12345",
-                    DataConfig = new ScheduleConfig() { Location = directory, Period = Enums.ReportPeriodType.H1 },
-                    ExportConfig = new ScheduleConfig() { Period = Enums.ReportPeriodType.H1 },
+                    DataConfig = new ScheduleConfigModel() { Location = directory, Period = Enums.ReportPeriodType.H1 },
+                    ExportConfig = new ScheduleConfigModel() { Location = @"C:\", Period = Enums.ReportPeriodType.H1 },
                 });
             }
 

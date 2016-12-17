@@ -9,11 +9,11 @@ namespace Mbk.Model
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public ScheduleConfig ExportConfig { get; set; }
-        public ScheduleConfig DataConfig { get; set; }
+        public ScheduleConfigModel ExportConfig { get; set; }
+        public ScheduleConfigModel DataConfig { get; set; }
     }
 
-    public class ScheduleConfig
+    public class ScheduleConfigModel
     {
         public string Location { get; set; }
         public bool IsEnabled { get; set; }

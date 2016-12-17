@@ -58,7 +58,7 @@ namespace Mbk.Service
                 int hour = _config.DataConfig.Hour;
                 int minute = _config.DataConfig.Minute;
 
-                _dataTimer = new Timer(DataCollectingTimerCallback, _config.DataConfig, TilNextTime(hour, minute), TimeSpan.FromDays(1));
+                _dataTimer = new Timer(DataCollectingTimerCallback, _config, TilNextTime(hour, minute), TimeSpan.FromDays(1));
                 _logger.Info($"Auto collect data will start on {hour}:{minute.ToString("00")} of everyday.");
             }
             else
@@ -84,13 +84,13 @@ namespace Mbk.Service
         {
             try
             {
-                ScheduleConfig config = (ScheduleConfig)obj;
+                ConfigModel config = (ConfigModel)obj;
                 var cameras = _cameraManager.GetCameraListAsync().Result;
                 foreach (var cam in cameras)
                 {
                     try
                     {
-                        _dataManager.CollectDataAsync(config.Location, cam).Wait();
+                        _dataManager.CollectDataAsync(config, cam).Wait();
                         _logger.Info($"Get data from camera \t{cam.IpAddress} is successful.");
                     }
                     catch (Exception ex)
@@ -109,7 +109,7 @@ namespace Mbk.Service
         {
             try
             {
-                ScheduleConfig config = (ScheduleConfig)obj;
+                ScheduleConfigModel config = (ScheduleConfigModel)obj;
                 int totalCamera = _reportManager.GenerateDataReportAsync(config.Location, DateTime.Today, config.Period).Result;
                 _logger.Info($"Report for {DateTime.Today.ToString("dd/MM/yyyy")} was created successful for {totalCamera} camera(s)");
             }

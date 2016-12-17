@@ -5,6 +5,6 @@ namespace Mbk.Business.Interfaces
 {
     public interface IDataManager
     {
-        Task CollectDataAsync(string location, CameraModel camera);
+        Task CollectDataAsync(ConfigModel config, CameraModel camera);
     }
 }

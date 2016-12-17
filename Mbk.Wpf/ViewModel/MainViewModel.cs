@@ -93,7 +93,8 @@ namespace Mbk.Wpf.ViewModel
                        {
                            try
                            {
-                               await _dataManager.CollectDataAsync(BufferLocation, cam);
+                               var config = _configManager.GetConfig();
+                               await _dataManager.CollectDataAsync(config, cam);
                                totalCamera++;
                            }
                            catch (Exception)
