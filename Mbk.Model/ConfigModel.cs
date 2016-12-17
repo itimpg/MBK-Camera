@@ -4,6 +4,7 @@ namespace Mbk.Model
 {
     public class ConfigModel
     {
+        public string ServiceName { get; set; }
         public string DatabaseSource { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

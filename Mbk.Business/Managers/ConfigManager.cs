@@ -7,6 +7,11 @@ namespace Mbk.Business
 {
     public class ConfigManager : IConfigManager
     {
+        private string DefaultServiceName
+        {
+            get { return "MBK Camera Service"; }
+        }
+
         private string DefaultConfigFilePath
         {
             get
@@ -44,6 +49,7 @@ namespace Mbk.Business
 
                 SaveConfig(new ConfigModel
                 {
+                    ServiceName = DefaultServiceName,
                     DatabaseSource = DefaultDatabaseFile,
                     Username = "admin",
                     Password = "admin12345",

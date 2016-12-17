@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using log4net;
-using System.Threading;
-using Mbk.Business.Interfaces;
-using Mbk.Model;
 using Mbk.Business;
-using Mbk.Dal.Repositories.Interfaces;
+using Mbk.Business.Interfaces;
 using Mbk.Dal;
 using Mbk.Dal.Repositories;
-using AutoMapper;
+using Mbk.Dal.Repositories.Interfaces;
+using Mbk.Model;
+using System;
+using System.Diagnostics;
+using System.ServiceProcess;
+using System.Threading;
 
 namespace Mbk.Service
 {
@@ -43,10 +37,6 @@ namespace Mbk.Service
         #region Event handlers
         protected override void OnStart(string[] args)
         {
-#if DEBUG
-            System.Diagnostics.Debugger.Launch();
-#endif
-
             EventLog.WriteEntry("Mbk service is starting...", EventLogEntryType.Information);
 
             Init();

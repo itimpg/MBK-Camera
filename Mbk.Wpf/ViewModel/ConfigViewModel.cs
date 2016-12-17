@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -147,7 +148,7 @@ namespace Mbk.Wpf.ViewModel
         {
             get
             {
-                return _saveCommand ?? (_saveCommand = new RelayCommand(() =>
+                return _saveCommand ?? (_saveCommand = new RelayCommand(async () =>
                 {
                     try
                     {
@@ -167,6 +168,39 @@ namespace Mbk.Wpf.ViewModel
                         config.ExportConfig.Period = ExportPeriod;
 
                         _configManager.SaveConfig(config);
+
+                        await Task.Run(() =>
+                        {
+                            try
+                            {
+                                string serviceName = config.ServiceName;
+                                var service = new ServiceController(serviceName);
+                                bool isServiceShouldBeRunning = config.DataConfig.IsEnabled || config.ExportConfig.IsEnabled;
+                                if (isServiceShouldBeRunning)
+                                {
+                                    if (service.Status != ServiceControllerStatus.Stopped)
+                                    {
+                                        service.Stop();
+                                        service.WaitForStatus(ServiceControllerStatus.Stopped);
+                                    }
+
+                                    service.Start();
+                                    service.WaitForStatus(ServiceControllerStatus.Running);
+                                }
+                                else
+                                {
+                                    if (service.Status != ServiceControllerStatus.Stopped)
+                                    {
+                                        service.Stop();
+                                        service.WaitForStatus(ServiceControllerStatus.Stopped);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
+                        });
 
                         Messenger.Default.Send(new DataChangedNotificationMessage("Config Changed", DataChangedType.Config));
                         Messenger.Default.Send(new CloseWindowNotificationMessage("Closed", WindowType.Config));
