@@ -1,18 +1,13 @@
 ﻿using Mbk.Business.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Mbk.Model;
-using System.Xml.Serialization;
 using System.IO;
+using System.Xml.Serialization;
 
 namespace Mbk.Business
 {
     public class ConfigManager : IConfigManager
     {
-        private string FilePath
+        private string DefaultConfigFilePath
         {
             get
             {
@@ -20,7 +15,7 @@ namespace Mbk.Business
             }
         }
 
-        private string BufferDirectory
+        private string DefaultBufferDirectory
         {
             get
             {
@@ -28,11 +23,19 @@ namespace Mbk.Business
             }
         }
 
+        private string DefaultDatabaseFile
+        {
+            get
+            {
+                return Path.Combine(Directory.GetCurrentDirectory(), "mbk_camera.db");
+            }
+        }
+
         public ConfigModel GetConfig()
         {
-            var filePath = FilePath;
-            var directory = BufferDirectory;
-            if (!File.Exists(FilePath))
+            var filePath = DefaultConfigFilePath;
+            var directory = DefaultBufferDirectory;
+            if (!File.Exists(DefaultConfigFilePath))
             {
                 if (!Directory.Exists(directory))
                 {
@@ -41,6 +44,7 @@ namespace Mbk.Business
 
                 SaveConfig(new ConfigModel
                 {
+                    DatabaseSource = DefaultDatabaseFile,
                     Username = "admin",
                     Password = "admin12345",
                     DataConfig = new ScheduleConfig() { Location = directory, Period = Enums.ReportPeriodType.H1 },
@@ -48,12 +52,12 @@ namespace Mbk.Business
                 });
             }
 
-            return XmlHelper.LoadXml<ConfigModel>(File.ReadAllText(FilePath));
+            return XmlHelper.LoadXml<ConfigModel>(File.ReadAllText(DefaultConfigFilePath));
         }
 
         public void SaveConfig(ConfigModel config)
         {
-            File.WriteAllText(FilePath, XmlHelper.ToXml(config));
+            File.WriteAllText(DefaultConfigFilePath, XmlHelper.ToXml(config));
         }
     }
 

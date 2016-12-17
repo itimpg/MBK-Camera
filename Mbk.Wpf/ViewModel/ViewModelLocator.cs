@@ -46,7 +46,8 @@ namespace Mbk.Wpf.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<IDialogService, DialogService>();
 
-            string connectionString = @"data source=C:\Users\itim\Desktop\mbk_camera.db";
+            SimpleIoc.Default.Register<IConfigManager, ConfigManager>();
+            string connectionString = ServiceLocator.Current.GetInstance<IConfigManager>().GetConfig().DatabaseSource;
 
             SimpleIoc.Default.Register<ICameraRepository>(() =>
             {
@@ -67,7 +68,6 @@ namespace Mbk.Wpf.ViewModel
 
             SimpleIoc.Default.Register<ICameraManager, CameraManager>();
             SimpleIoc.Default.Register<IReportManager, ReportManager>();
-            SimpleIoc.Default.Register<IConfigManager, ConfigManager>();
             SimpleIoc.Default.Register<IDataManager, DataManager>();
 
             SimpleIoc.Default.Register<MainViewModel>();

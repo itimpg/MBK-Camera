@@ -6,7 +6,7 @@ namespace Mbk.Dal
     public partial class MbkCameraDb : DbContext
     {
         public MbkCameraDb(string connectionString)
-             : base(new SQLiteConnection() { ConnectionString = connectionString }, true)
+             : base(new SQLiteConnection() { ConnectionString = "data source=" + connectionString }, true)
         {
 
         }

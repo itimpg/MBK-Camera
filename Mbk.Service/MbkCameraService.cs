@@ -35,10 +35,10 @@ namespace Mbk.Service
         public MbkCameraService()
         {
             InitializeComponent();
-            string connectionString = @"data source=‪C:\Users\itim\Desktop\mbk_camera.db";
 
             _configManager = new ConfigManager();
-           
+            string connectionString = _configManager.GetConfig().DatabaseSource;
+
             ICameraRepository cameraRepository = new CameraRepository(connectionString);
             IHeatMapRepository heatMapRepository = new HeatMapRepository(connectionString);
             ICountingRepository countingRepository = new CountingRepository(connectionString);
