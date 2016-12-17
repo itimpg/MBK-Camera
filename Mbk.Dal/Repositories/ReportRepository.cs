@@ -57,6 +57,7 @@ namespace Mbk.Dal.Repositories
                                         CameraName = g.Key.CameraName,
                                         Date = g.Key.Date,
                                         Report = g
+                                            .OrderBy(x => x.Time)
                                             .Select((x, i) => new
                                             {
                                                 Period = i / separateValue,
@@ -64,7 +65,6 @@ namespace Mbk.Dal.Repositories
                                                 Density = x.Density,
                                                 Population = x.Population
                                             })
-                                            .OrderBy(x => x.Time)
                                             .GroupBy(x => x.Period)
                                             .Select(g2 => new
                                             {
