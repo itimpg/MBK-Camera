@@ -22,17 +22,5 @@ namespace Mbk.Service.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\itim\\Documents\\Projects\\MBK-Camera\\Mbk.Wpf\\bin\\Debug\\config.xml")]
-        public string ConfigFilePath {
-            get {
-                return ((string)(this["ConfigFilePath"]));
-            }
-            set {
-                this["ConfigFilePath"] = value;
-            }
-        }
     }
 }

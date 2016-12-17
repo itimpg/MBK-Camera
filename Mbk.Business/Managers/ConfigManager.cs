@@ -1,5 +1,6 @@
 ﻿using Mbk.Business.Interfaces;
 using Mbk.Model;
+using System;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -16,7 +17,7 @@ namespace Mbk.Business
         {
             get
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "config.xml");
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.xml");
             }
         }
 
@@ -24,7 +25,7 @@ namespace Mbk.Business
         {
             get
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "Buffer");
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Buffer");
             }
         }
 
@@ -32,7 +33,7 @@ namespace Mbk.Business
         {
             get
             {
-                return Path.Combine(Directory.GetCurrentDirectory(), "mbk_camera.db");
+                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mbk_camera.db");
             }
         }
 

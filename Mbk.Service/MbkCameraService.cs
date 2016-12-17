@@ -148,10 +148,9 @@ namespace Mbk.Service
             {
                 cfg.AddProfile<ModelProfile>();
             });
-
-            string configFilePath = Properties.Settings.Default.ConfigFilePath;
+            
             IConfigManager configManager = new ConfigManager();
-            _config = configManager.GetConfig(configFilePath);
+            _config = configManager.GetConfig();
 
             string connectionString = _config.DatabaseSource;
 
