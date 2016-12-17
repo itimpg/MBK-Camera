@@ -31,11 +31,11 @@ namespace Mbk.Business
             }
         }
 
-        public ConfigModel GetConfig()
+        public ConfigModel GetConfig(string configFilePath = null)
         {
-            var filePath = DefaultConfigFilePath;
+            var filePath = configFilePath ?? DefaultConfigFilePath;
             var directory = DefaultBufferDirectory;
-            if (!File.Exists(DefaultConfigFilePath))
+            if (!File.Exists(filePath))
             {
                 if (!Directory.Exists(directory))
                 {
@@ -52,12 +52,13 @@ namespace Mbk.Business
                 });
             }
 
-            return XmlHelper.LoadXml<ConfigModel>(File.ReadAllText(DefaultConfigFilePath));
+            return XmlHelper.LoadXml<ConfigModel>(File.ReadAllText(filePath));
         }
 
-        public void SaveConfig(ConfigModel config)
+        public void SaveConfig(ConfigModel config, string filePath = null)
         {
-            File.WriteAllText(DefaultConfigFilePath, XmlHelper.ToXml(config));
+            var saveFilePath = filePath ?? DefaultConfigFilePath;
+            File.WriteAllText(saveFilePath, XmlHelper.ToXml(config));
         }
     }
 

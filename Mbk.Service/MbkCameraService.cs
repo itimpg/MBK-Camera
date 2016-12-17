@@ -15,6 +15,7 @@ using Mbk.Business;
 using Mbk.Dal.Repositories.Interfaces;
 using Mbk.Dal;
 using Mbk.Dal.Repositories;
+using AutoMapper;
 
 namespace Mbk.Service
 {
@@ -22,7 +23,6 @@ namespace Mbk.Service
     {
         #region Fields
         private ILog _logger;
-        private IConfigManager _configManager;
         private IDataManager _dataManager;
         private IReportManager _reportManager;
         private ICameraManager _cameraManager;
@@ -36,27 +36,20 @@ namespace Mbk.Service
         public MbkCameraService()
         {
             InitializeComponent();
-
-            _configManager = new ConfigManager();
-            string connectionString = _configManager.GetConfig().DatabaseSource;
-
-            IHeatMapRepository heatMapRepository = new HeatMapRepository(connectionString);
-            ICountingRepository countingRepository = new CountingRepository(connectionString);
-            _dataManager = new DataManager(heatMapRepository, countingRepository);
-
-            IReportRepository reportRepository = new ReportRepository(connectionString);
-            _reportManager = new ReportManager(reportRepository);
-
-            ICameraRepository cameraRepository = new CameraRepository(connectionString);
-            _cameraManager = new CameraManager(cameraRepository);
         }
+
         #endregion
 
         #region Event handlers
         protected override void OnStart(string[] args)
         {
+#if DEBUG
+            System.Diagnostics.Debugger.Launch();
+#endif
+
             EventLog.WriteEntry("Mbk service is starting...", EventLogEntryType.Information);
 
+            Init();
             ConfigureLog4Net();
             ConfigureTimers();
         }
@@ -70,8 +63,6 @@ namespace Mbk.Service
         #region Private Methods
         private void ConfigureTimers()
         {
-            _config = _configManager.GetConfig();
-
             if (_config.DataConfig.IsEnabled)
             {
                 int hour = _config.DataConfig.Hour;
@@ -90,7 +81,7 @@ namespace Mbk.Service
                 int hour = _config.ExportConfig.Hour;
                 int minute = _config.ExportConfig.Minute;
 
-                _reportTimer = new Timer(ReportTimerCallback, _config.ExportConfig, TilNextTime(18, 30), TimeSpan.FromDays(1));
+                _reportTimer = new Timer(ReportTimerCallback, _config.ExportConfig, TilNextTime(hour, minute), TimeSpan.FromDays(1));
                 _logger.Info($"Auto export will start on {hour}:{minute} of everyday");
             }
             else
@@ -101,20 +92,41 @@ namespace Mbk.Service
 
         private void DataCollectingTimerCallback(object obj)
         {
-            ScheduleConfig config = (ScheduleConfig)obj;
-            var cameras = _cameraManager.GetCameraListAsync().Result;
-            foreach (var cam in cameras)
+            try
             {
-                _dataManager.CollectDataAsync(config.Location, cam).Wait();
+                ScheduleConfig config = (ScheduleConfig)obj;
+                var cameras = _cameraManager.GetCameraListAsync().Result;
+                foreach (var cam in cameras)
+                {
+                    try
+                    {
+                        _dataManager.CollectDataAsync(config.Location, cam).Wait();
+                        _logger.Info($"Get data from camera \t{cam.IpAddress} is successful.");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error($"Get data from camera \t{cam.IpAddress} has error occurred, \t{ex.Message}");
+                    }
+                }
             }
-            _logger.Info($"Data was collected on {DateTime.Now}");
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+            }
         }
 
         private void ReportTimerCallback(object obj)
         {
-            ScheduleConfig config = (ScheduleConfig)obj;
-            _reportManager.GenerateDataReportAsync(config.Location, DateTime.Today, config.Period).Wait();
-            _logger.Info($"Report was exported on {DateTime.Now}");
+            try
+            {
+                ScheduleConfig config = (ScheduleConfig)obj;
+                int totalCamera = _reportManager.GenerateDataReportAsync(config.Location, DateTime.Today, config.Period).Result;
+                _logger.Info($"Report for {DateTime.Today.ToString("dd/MM/yyyy")} was created successful for {totalCamera} camera(s)");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+            }
         }
 
         private void ConfigureLog4Net()
@@ -135,10 +147,35 @@ namespace Mbk.Service
             DateTime executeTime = DateTime.Today.AddHours(hour).AddMinutes(minute);
             if (executeTime < DateTime.Now)
             {
-                executeTime.AddDays(1);
+                executeTime = executeTime.AddDays(1);
             }
-            return (executeTime - DateTime.Now);
+            return executeTime.Subtract(DateTime.Now);
         }
+
+        private void Init()
+        {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfile<ModelProfile>();
+            });
+
+            string configFilePath = Properties.Settings.Default.ConfigFilePath;
+            IConfigManager configManager = new ConfigManager();
+            _config = configManager.GetConfig(configFilePath);
+
+            string connectionString = _config.DatabaseSource;
+
+            IHeatMapRepository heatMapRepository = new HeatMapRepository(connectionString);
+            ICountingRepository countingRepository = new CountingRepository(connectionString);
+            _dataManager = new DataManager(heatMapRepository, countingRepository);
+
+            IReportRepository reportRepository = new ReportRepository(connectionString);
+            _reportManager = new ReportManager(reportRepository);
+
+            ICameraRepository cameraRepository = new CameraRepository(connectionString);
+            _cameraManager = new CameraManager(cameraRepository);
+        }
+
         #endregion
     }
 }
