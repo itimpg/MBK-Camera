@@ -59,7 +59,7 @@ namespace Mbk.Service
                 int minute = _config.DataConfig.Minute;
 
                 _dataTimer = new Timer(DataCollectingTimerCallback, _config.DataConfig, TilNextTime(hour, minute), TimeSpan.FromDays(1));
-                _logger.Info($"Auto collect data will start on {hour}:{minute} of everyday.");
+                _logger.Info($"Auto collect data will start on {hour}:{minute.ToString("00")} of everyday.");
             }
             else
             {
@@ -72,7 +72,7 @@ namespace Mbk.Service
                 int minute = _config.ExportConfig.Minute;
 
                 _reportTimer = new Timer(ReportTimerCallback, _config.ExportConfig, TilNextTime(hour, minute), TimeSpan.FromDays(1));
-                _logger.Info($"Auto export will start on {hour}:{minute} of everyday");
+                _logger.Info($"Auto export will start on {hour}:{minute.ToString("00")} of everyday");
             }
             else
             {
