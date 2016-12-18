@@ -29,31 +29,49 @@ namespace Mbk.Business
             await GetCountingAsync(config, camera.Id, camera.IpAddress);
         }
 
-        private async Task<string> GetHeatMapFile(ConfigModel config, string ipAddress)
+        private async Task<string> GetFile(ConfigModel config, string uri, string ipAddress, string filename)
         {
-            return await Task.Run(() =>
-            {
-                return File.ReadAllText(@"D:\mbk\heatmap.txt");
-            });
+            var queryDate = DateTime.Today;
+            string fileUri = string.Format(uri,
+                config.Username, config.Password, ipAddress,
+                queryDate.Year, queryDate.Month, queryDate.Day);
+            string filePath = Path.Combine(
+                   config.DataConfig.Location,
+                   string.Format("{0}_{1}_({2}).txt", filename, DateTime.Today.ToString("yyyyMMdd"), ipAddress.Replace('.', '-')));
 
-            // TODO: Get data by command
             using (var client = new HttpClient())
             {
-                string uri = $@"http://{config.Username}:{config.Password}@{ipAddress}/cgi-bin/get_metadata?kind=heatmap_mov&mode=multi&year=2016&month=12&date=8&hour=0&days=1";
-                using (var stream = await client.GetStreamAsync(uri))
+                var response = await client.GetAsync(fileUri);
+                response.EnsureSuccessStatusCode();
+                await ReadAsFileAsync(response.Content, filePath);
+
+                return File.ReadAllText(filePath);
+            }
+        }
+        private async Task ReadAsFileAsync(HttpContent content, string filePath)
+        {
+            FileStream fileStream = null;
+            try
+            {
+                fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+                await content.CopyToAsync(fileStream).ContinueWith((copyTask) => fileStream.Close());
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                if (fileStream != null)
                 {
-                    string filePath = Path.Combine(config.DataConfig.Location, $"heatmap_{DateTime.Today.ToString("yyyyMMdd")}.txt");
-                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                    {
-                        stream.CopyTo(fileStream);
-                        return File.ReadAllText(filePath);
-                    }
+                    fileStream.Close();
                 }
             }
         }
+
         private async Task GetHeatMap(ConfigModel config, int cameraId, string ipAddress)
         {
-            string[] texts = (await GetHeatMapFile(config, ipAddress))
+            string[] texts = (await GetFile(config, config.HeatMapUri, ipAddress, config.HeatMapBufferFileName))
                 .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var heatmaps =
@@ -80,32 +98,9 @@ namespace Mbk.Business
                     }).ToArray();
             await _heatMapRepository.InsertAsync(heatmaps);
         }
-
-        private async Task<string> GetCountingFile(ConfigModel config, string ipAddress)
-        {
-            return await Task.Run(() =>
-            {
-                return File.ReadAllText(@"D:\mbk\counting.txt");
-            });
-
-            // TODO: Get data by command
-            using (var client = new HttpClient())
-            {
-                string uri = $@"http://{config.Username}:{config.Password}@{ipAddress}/cgi-bin/get_metadata?kind=movcnt_info&mode=multi&year=2016&month=12&date=8&hour=0&days=1";
-                using (var stream = await client.GetStreamAsync(uri))
-                {
-                    string filePath = Path.Combine(config.DataConfig.Location, $"counting_{DateTime.Today.ToString("yyyyMMdd")}.txt");
-                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                    {
-                        stream.CopyTo(fileStream);
-                        return File.ReadAllText(filePath);
-                    }
-                }
-            }
-        }
         private async Task GetCountingAsync(ConfigModel config, int cameraId, string ipAddress)
         {
-            string[] texts = (await GetHeatMapFile(config, ipAddress))
+            string[] texts = (await GetFile(config, config.CountingUri, ipAddress, config.CountingBufferFileName))
                .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var countings =

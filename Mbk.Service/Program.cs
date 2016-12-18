@@ -1,4 +1,6 @@
-﻿using System.ServiceProcess;
+﻿using System.Globalization;
+using System.ServiceProcess;
+using System.Threading;
 
 namespace Mbk.Service
 {
@@ -9,6 +11,10 @@ namespace Mbk.Service
         /// </summary>
         static void Main()
         {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {

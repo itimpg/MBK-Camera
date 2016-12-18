@@ -54,6 +54,10 @@ namespace Mbk.Business
                     DatabaseSource = DefaultDatabaseFile,
                     Username = "admin",
                     Password = "admin12345",
+                    HeatMapUri = "http://{0}:{1}@{2}/cgi-bin/get_metadata?kind=heatmap_mov_info&mode=multi&year={3}&month={4}&date={5}&hour=0&days=1",
+                    HeatMapBufferFileName = "heatmap",
+                    CountingUri = "http://{0}:{1}@{2}/cgi-bin/get_metadata?kind=movcnt_info&mode=multi&year={3}&month={4}&date={5}&hour=0&days=1",
+                    CountingBufferFileName = "counting",
                     DataConfig = new ScheduleConfigModel() { Location = directory, Period = Enums.ReportPeriodType.H1 },
                     ExportConfig = new ScheduleConfigModel() { Location = @"C:\", Period = Enums.ReportPeriodType.H1 },
                 });

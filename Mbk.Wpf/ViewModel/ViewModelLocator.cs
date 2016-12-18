@@ -23,6 +23,8 @@ using Mbk.Model;
 using Mbk.Wpf.Services;
 using Mbk.Wpf.Services.Interfaces;
 using Microsoft.Practices.ServiceLocation;
+using System.Globalization;
+using System.Threading;
 
 namespace Mbk.Wpf.ViewModel
 {
@@ -37,6 +39,10 @@ namespace Mbk.Wpf.ViewModel
         /// </summary>
         public ViewModelLocator()
         {
+            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<CameraViewModel, CameraModel>().ReverseMap();
