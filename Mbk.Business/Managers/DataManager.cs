@@ -7,6 +7,8 @@ using System;
 using System.IO;
 using static Mbk.Helper.Converter;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace Mbk.Business
 {
@@ -32,15 +34,17 @@ namespace Mbk.Business
         private async Task<string> GetFile(ConfigModel config, string uri, string ipAddress, string filename)
         {
             var queryDate = DateTime.Today;
-            string fileUri = string.Format(uri,
-                config.Username, config.Password, ipAddress,
-                queryDate.Year, queryDate.Month, queryDate.Day);
+            string fileUri = string.Format(uri, ipAddress, queryDate.Year, queryDate.Month, queryDate.Day);
             string filePath = Path.Combine(
                    config.DataConfig.Location,
                    string.Format("{0}_{1}_({2}).txt", filename, DateTime.Today.ToString("yyyyMMdd"), ipAddress.Replace('.', '-')));
 
             using (var client = new HttpClient())
             {
+                var headerVal = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.Username}:{config.Password}"));
+                var header = new AuthenticationHeaderValue("Basic", headerVal);
+                client.DefaultRequestHeaders.Authorization = header;
+
                 var response = await client.GetAsync(fileUri);
                 response.EnsureSuccessStatusCode();
                 await ReadAsFileAsync(response.Content, filePath);
@@ -48,24 +52,19 @@ namespace Mbk.Business
                 return File.ReadAllText(filePath);
             }
         }
+
         private async Task ReadAsFileAsync(HttpContent content, string filePath)
         {
-            FileStream fileStream = null;
             try
             {
-                fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
-                await content.CopyToAsync(fileStream).ContinueWith((copyTask) => fileStream.Close());
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    await content.CopyToAsync(fileStream).ContinueWith((copyTask) => fileStream.Close());
+                }
             }
             catch
             {
                 throw;
-            }
-            finally
-            {
-                if (fileStream != null)
-                {
-                    fileStream.Close();
-                }
             }
         }
 
@@ -98,6 +97,7 @@ namespace Mbk.Business
                     }).ToArray();
             await _heatMapRepository.InsertAsync(heatmaps);
         }
+
         private async Task GetCountingAsync(ConfigModel config, int cameraId, string ipAddress)
         {
             string[] texts = (await GetFile(config, config.CountingUri, ipAddress, config.CountingBufferFileName))
