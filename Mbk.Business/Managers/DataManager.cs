@@ -93,7 +93,7 @@ namespace Mbk.Business
                         DateTime = x.DateTime,
                         //RawData = x.Raw,
                         RawData = "Leave it empty",
-                        Density = x.Value.Length > 0 ? x.Value.Sum() / x.Value.Length : 0,
+                        Density = x.Value.Length > 0 ? Math.Round(x.Value.Sum() / x.Value.Length) : 0,
                     }).ToArray();
             await _heatMapRepository.InsertAsync(heatmaps);
         }
