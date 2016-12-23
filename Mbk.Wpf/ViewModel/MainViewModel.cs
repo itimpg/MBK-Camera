@@ -87,19 +87,32 @@ namespace Mbk.Wpf.ViewModel
                    try
                    {
                        IsLoading = true;
+
                        var cameras = await _cameraManager.GetCameraListAsync();
                        int totalCamera = 0;
-                       foreach (var cam in cameras)
+
+                       IsShowProgress = true;
+                       ProgressValue = 0;
+                       ProgressMax = cameras.Count;
+                       ProgressText = string.Empty;
+
+                       var config = _configManager.GetConfig();
+                       for (int i = 0; i < cameras.Count; i++)
                        {
+                           var cam = cameras[i];
                            try
                            {
-                               var config = _configManager.GetConfig();
+                               ProgressText = $"Get data from camera: {cam.Name} ({i + 1}/{cameras.Count})";
                                await _dataManager.CollectDataAsync(config, cam);
                                totalCamera++;
                            }
                            catch (Exception)
                            {
                                continue;
+                           }
+                           finally
+                           {
+                               ProgressValue++;
                            }
                        }
                        Logs.Insert(0, new SystemLogViewModel { LogDate = DateTime.Now, Description = $"Get data finish {totalCamera} camera(s)" });
@@ -110,6 +123,7 @@ namespace Mbk.Wpf.ViewModel
                    }
                    finally
                    {
+                       IsShowProgress = false;
                        IsLoading = false;
                    }
                }, () => !string.IsNullOrEmpty(BufferLocation)));
@@ -186,6 +200,34 @@ namespace Mbk.Wpf.ViewModel
         {
             get { return _isLoading; }
             set { Set(() => IsLoading, ref _isLoading, value); }
+        }
+
+        private bool _isShowProgress;
+        public bool IsShowProgress
+        {
+            get { return _isShowProgress; }
+            set { Set(() => IsShowProgress, ref _isShowProgress, value); }
+        }
+
+        private int _progressValue;
+        public int ProgressValue
+        {
+            get { return _progressValue; }
+            set { Set(() => ProgressValue, ref _progressValue, value); }
+        }
+
+        private int _progressMax;
+        public int ProgressMax
+        {
+            get { return _progressMax; }
+            set { Set(() => ProgressMax, ref _progressMax, value); }
+        }
+
+        private string _progressText;
+        public string ProgressText
+        {
+            get { return _progressText; }
+            set { Set(() => ProgressText, ref _progressText, value); }
         }
         #endregion
 
