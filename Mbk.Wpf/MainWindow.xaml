@@ -87,7 +87,14 @@
                               SelectedValuePath="Value"/>
                         <Label Grid.Row="1" Grid.Column="2">per day</Label>
                     </Grid>
-                    <TextBox IsEnabled="False" Margin="2" Text="{Binding ReportLocation, Mode=OneWay}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">Export Location : </Label>
+                        <TextBox Grid.Column="1" IsEnabled="False" Margin="2" Text="{Binding ReportLocation, Mode=OneWay}" />
+                    </Grid>
                     <Button Margin="2" Content="Export Data" Command="{Binding ExportReportCommand}"/>
                 </StackPanel>
 
