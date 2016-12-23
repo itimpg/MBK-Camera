@@ -48,6 +48,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
@@ -55,7 +56,9 @@
                     Command="{Binding AddCameraCommand}"/>
                 <Button Grid.Column="1" Width="80" Content="Edit" Margin="2"
                     Command="{Binding EditCameraCommand}"/>
-                <Button Grid.Column="3" Width="160" Content="Check Connection" Margin="2"
+                <Button Grid.Column="2" Width="80" Content="Delete" Margin="2"
+                    Command="{Binding DeleteCameraCommand}"/>
+                <Button Grid.Column="4" Width="160" Content="Check Connection" Margin="2"
                     Command="{Binding CheckConnectionCommand}"/>
             </Grid>
             <DataGrid Grid.Row="1" BorderBrush="Black" BorderThickness="1"

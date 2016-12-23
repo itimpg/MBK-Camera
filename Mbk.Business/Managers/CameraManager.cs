@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using System;
 
 namespace Mbk.Business
 {
@@ -81,6 +82,11 @@ namespace Mbk.Business
             {
                 await _cameraRepository.UpdateAsync(camera);
             }
+        }
+
+        public async Task DeleteCameraAsync(int cameraId)
+        {
+            await _cameraRepository.DeleteAsync(cameraId);
         }
     }
 }

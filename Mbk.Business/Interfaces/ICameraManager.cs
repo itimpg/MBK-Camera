@@ -8,6 +8,7 @@ namespace Mbk.Business.Interfaces
     {
         Task<IList<CameraModel>> GetCameraListAsync();
         Task SaveCameraAsync(CameraModel camera);
+        Task DeleteCameraAsync(int cameraId);
         Task<string> GetCameraStatusAsync(string ipAddress);
         Task<string> CheckCameraInSystemAsync();
         Task<CameraModel> GetCameraAsync(int cameraId);

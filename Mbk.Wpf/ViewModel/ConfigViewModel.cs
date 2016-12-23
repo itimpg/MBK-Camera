@@ -143,6 +143,24 @@ namespace Mbk.Wpf.ViewModel
             }
         }
 
+        private ICommand _deleteCameraCommand;
+        public ICommand DeleteCameraCommand
+        {
+            get
+            {
+                return _deleteCameraCommand ??
+                  (_deleteCameraCommand = new RelayCommand(async () =>
+                  {
+                      int cameraId = SelectedCamera.Id;
+                      if (_dialogService.ShowConfirmationMessage("Do you want to delete this camera?", "Comfirm Delete"))
+                      {
+                          await _cameraManager.DeleteCameraAsync(cameraId);
+                          await LoadCameraAsync();
+                      }
+                  }, () => SelectedCamera != null));
+            }
+        }
+
         private ICommand _saveCommand;
         public ICommand SaveCommand
         {
