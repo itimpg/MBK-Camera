@@ -27,17 +27,17 @@ namespace Mbk.Business
 
         public async Task CollectDataAsync(ConfigModel config, CameraModel camera)
         {
-            await GetHeatMap(config, camera.Id, camera.IpAddress);
-            await GetCountingAsync(config, camera.Id, camera.IpAddress);
+            await GetHeatMap(config, camera);
+            await GetCountingAsync(config, camera);
         }
 
-        private async Task<string> GetFile(ConfigModel config, string uri, string ipAddress, string filename)
+        private async Task<string> GetFile(ConfigModel config, CameraModel camera, string uri, string filename)
         {
-            var queryDate = DateTime.Today;
-            string fileUri = string.Format(uri, ipAddress, queryDate.Year, queryDate.Month, queryDate.Day);
+            var queryDate = DateTime.Now.AddHours(-7).Date;
+            string fileUri = string.Format(uri, camera.IpAddress, queryDate.Year, queryDate.Month, queryDate.Day);
             string filePath = Path.Combine(
                    config.DataConfig.Location,
-                   string.Format("{0}_{1}_({2}).txt", filename, DateTime.Today.ToString("yyyyMMdd"), ipAddress.Replace('.', '-')));
+                   string.Format("{0}_{1}_({2}).txt", filename, queryDate.ToString("yyyyMMdd"), camera.IpAddress.Replace('.', '-')));
 
             using (var client = new HttpClient())
             {
@@ -68,9 +68,9 @@ namespace Mbk.Business
             }
         }
 
-        private async Task GetHeatMap(ConfigModel config, int cameraId, string ipAddress)
+        private async Task GetHeatMap(ConfigModel config, CameraModel camera)
         {
-            string[] texts = (await GetFile(config, config.HeatMapUri, ipAddress, config.HeatMapBufferFileName))
+            string[] texts = (await GetFile(config, camera, config.HeatMapUri, config.HeatMapBufferFileName))
                 .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var heatmaps =
@@ -88,7 +88,7 @@ namespace Mbk.Business
                             .Where(a => a > 0).ToArray()
                     }).Select(x => new HeatMapModel
                     {
-                        CameraId = cameraId,
+                        CameraId = camera.Id,
                         Gmt = x.Gmt,
                         DateTime = x.DateTime,
                         //RawData = x.Raw,
@@ -98,9 +98,9 @@ namespace Mbk.Business
             await _heatMapRepository.InsertAsync(heatmaps);
         }
 
-        private async Task GetCountingAsync(ConfigModel config, int cameraId, string ipAddress)
+        private async Task GetCountingAsync(ConfigModel config, CameraModel camera)
         {
-            string[] texts = (await GetFile(config, config.CountingUri, ipAddress, config.CountingBufferFileName))
+            string[] texts = (await GetFile(config, camera, config.CountingUri, config.CountingBufferFileName))
                .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var countings =
@@ -108,7 +108,7 @@ namespace Mbk.Business
                     .Where(x => x.Length > 1)
                     .Select(x => new CountingModel
                     {
-                        CameraId = cameraId,
+                        CameraId = camera.Id,
                         Gmt = ConvertToTime(x[3].Split(',')[5]),
                         DateTime = ConvertToDateTime(string.Join(" ", x[3].Split(',').Take(2))),
                         //RawData = string.Join(Environment.NewLine, x.Skip(4)),
