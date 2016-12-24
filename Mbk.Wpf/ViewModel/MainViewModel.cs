@@ -97,6 +97,7 @@ namespace Mbk.Wpf.ViewModel
                        ProgressText = string.Empty;
 
                        var config = _configManager.GetConfig();
+                       _configManager.CheckConfig(config);
                        for (int i = 0; i < cameras.Count; i++)
                        {
                            var cam = cameras[i];

@@ -1,6 +1,7 @@
 ﻿using Mbk.Business.Interfaces;
 using Mbk.Model;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -70,6 +71,26 @@ namespace Mbk.Business
         {
             var saveFilePath = filePath ?? DefaultConfigFilePath;
             File.WriteAllText(saveFilePath, XmlHelper.ToXml(config));
+        }
+
+        public void CheckConfig(ConfigModel config)
+        {
+            List<string> errorMessages = new List<string>();
+
+            if (!Directory.Exists(config.DataConfig.Location))
+            {
+                errorMessages.Add($"Cannot found buffer location : {config.DataConfig.Location}");
+            }
+
+            if (!Directory.Exists(config.ExportConfig.Location))
+            {
+                errorMessages.Add($"Cannot found export location : {config.ExportConfig.Location}");
+            }
+
+            if (errorMessages.Count > 0)
+            {
+                throw new Exception(string.Join(", ", errorMessages));
+            }
         }
     }
 

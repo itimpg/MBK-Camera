@@ -20,6 +20,7 @@ namespace Mbk.Service
         private IDataManager _dataManager;
         private IReportManager _reportManager;
         private ICameraManager _cameraManager;
+        private IConfigManager _configManager;
 
         private Timer _dataTimer;
         private Timer _reportTimer;
@@ -53,30 +54,37 @@ namespace Mbk.Service
         #region Private Methods
         private void ConfigureTimers()
         {
-            if (_config.DataConfig.IsEnabled)
+            try
             {
-                int hour = _config.DataConfig.Hour;
-                int minute = _config.DataConfig.Minute;
+                if (_config.DataConfig.IsEnabled)
+                {
+                    int hour = _config.DataConfig.Hour;
+                    int minute = _config.DataConfig.Minute;
 
-                _dataTimer = new Timer(DataCollectingTimerCallback, _config, TilNextTime(hour, minute), TimeSpan.FromDays(1));
-                _logger.Info($"Auto collect data will start on {hour}:{minute.ToString("00")} of everyday.");
-            }
-            else
-            {
-                _logger.Info("Auto collect data function is disabled.");
-            }
+                    _dataTimer = new Timer(DataCollectingTimerCallback, _config, TilNextTime(hour, minute), TimeSpan.FromDays(1));
+                    _logger.Info($"Auto collect data will start on {hour}:{minute.ToString("00")} of everyday.");
+                }
+                else
+                {
+                    _logger.Info("Auto collect data function is disabled.");
+                }
 
-            if (_config.ExportConfig.IsEnabled)
-            {
-                int hour = _config.ExportConfig.Hour;
-                int minute = _config.ExportConfig.Minute;
+                if (_config.ExportConfig.IsEnabled)
+                {
+                    int hour = _config.ExportConfig.Hour;
+                    int minute = _config.ExportConfig.Minute;
 
-                _reportTimer = new Timer(ReportTimerCallback, _config.ExportConfig, TilNextTime(hour, minute), TimeSpan.FromDays(1));
-                _logger.Info($"Auto export will start on {hour}:{minute.ToString("00")} of everyday");
+                    _reportTimer = new Timer(ReportTimerCallback, _config.ExportConfig, TilNextTime(hour, minute), TimeSpan.FromDays(1));
+                    _logger.Info($"Auto export will start on {hour}:{minute.ToString("00")} of everyday");
+                }
+                else
+                {
+                    _logger.Info("Auto export function is disabled.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.Info("Auto export function is disabled.");
+                _logger.Error(ex.Message);
             }
         }
 
@@ -84,6 +92,8 @@ namespace Mbk.Service
         {
             try
             {
+                _configManager.CheckConfig(_config);
+
                 ConfigModel config = (ConfigModel)obj;
                 var cameras = _cameraManager.GetCameraListAsync().Result;
                 foreach (var cam in cameras)
@@ -109,6 +119,8 @@ namespace Mbk.Service
         {
             try
             {
+                _configManager.CheckConfig(_config);
+
                 ScheduleConfigModel config = (ScheduleConfigModel)obj;
                 int totalCamera = _reportManager.GenerateDataReportAsync(config.Location, DateTime.Today, config.Period).Result;
                 _logger.Info($"Report for {DateTime.Today.ToString("dd/MM/yyyy")} was created successful for {totalCamera} camera(s)");
@@ -148,9 +160,9 @@ namespace Mbk.Service
             {
                 cfg.AddProfile<ModelProfile>();
             });
-            
-            IConfigManager configManager = new ConfigManager();
-            _config = configManager.GetConfig();
+
+            _configManager = new ConfigManager();
+            _config = _configManager.GetConfig();
 
             string connectionString = _config.DatabaseSource;
 
