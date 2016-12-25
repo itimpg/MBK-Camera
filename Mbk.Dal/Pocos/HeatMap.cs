@@ -30,5 +30,9 @@ namespace Mbk.Dal
         public string RawData { get; set; }
 
         public decimal Density { get; set; }
+
+        public long TotalValue { get; set; }
+
+        public long TotalCount { get; set; }
     }
 }

@@ -67,7 +67,7 @@ namespace Mbk.Business
                 throw;
             }
         }
-
+        
         private async Task GetHeatMap(ConfigModel config, CameraModel camera)
         {
             string[] texts = (await GetFile(config, camera, config.HeatMapUri, config.HeatMapBufferFileName))
@@ -84,7 +84,7 @@ namespace Mbk.Business
                         Raw = string.Join(Environment.NewLine, x.Skip(4)),
                         Value = string.Join(Environment.NewLine, x.Skip(4))
                             .Split(new[] { Environment.NewLine, "," }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(decimal.Parse)
+                            .Select(long.Parse)
                             .Where(a => a > 0).ToArray()
                     }).Select(x => new HeatMapModel
                     {
@@ -93,7 +93,10 @@ namespace Mbk.Business
                         DateTime = x.DateTime,
                         //RawData = x.Raw,
                         RawData = "Leave it empty",
-                        Density = x.Value.Length > 0 ? Math.Round(x.Value.Sum() / x.Value.Length) : 0,
+                        TotalValue = x.Value.Sum(),
+                        TotalCount = x.Value.Length,
+                        Density = x.Value.Length > 0 ?
+                            Math.Round((decimal)(x.Value.Sum() / x.Value.Length)) : 0,
                     }).ToArray();
             await _heatMapRepository.InsertAsync(heatmaps);
         }
@@ -113,11 +116,11 @@ namespace Mbk.Business
                         DateTime = ConvertToDateTime(string.Join(" ", x[3].Split(',').Take(2))),
                         //RawData = string.Join(Environment.NewLine, x.Skip(4)),
                         RawData = "Leave it empty",
-                        Population = x.Skip(4).Sum(a =>
+                        CountingDetails = x.Skip(4).Select(a =>
                         {
-                            var items = a.Split(',').Select(decimal.Parse).ToArray();
-                            return items[4] - items[5];
-                        })
+                            var items = a.Split(',').Select(long.Parse).ToArray();
+                            return new CountingDetailModel { A = items[4], B = items[5] };
+                        }).ToList()
                     }).ToArray();
             await _countingRepository.InsertAsync(countings);
         }

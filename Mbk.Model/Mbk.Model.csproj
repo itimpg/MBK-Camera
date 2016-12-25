@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="CameraModel.cs" />
     <Compile Include="ConfigModel.cs" />
+    <Compile Include="CountingDetailModel.cs" />
     <Compile Include="CountingModel.cs" />
     <Compile Include="Enums\ReportPeriodType.cs" />
     <Compile Include="HeatMapCountingReportModel.cs" />

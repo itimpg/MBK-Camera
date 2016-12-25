@@ -25,8 +25,9 @@ namespace Mbk.Dal.Repositories
                     string queryDate = ToDateString(reportDate);
                     var dbData = from cam in db.Cameras
                                  join hm in db.HeatMaps on cam.Id equals hm.CameraId
-                                 join ct in db.Countings on new { CameraId = cam.Id, Date = hm.Date, Time = hm.Time, Gmt = hm.Gmt }
-                                    equals new { CameraId = ct.CameraId, Date = ct.Date, ct.Time, ct.Gmt }
+                                 join ct in db.Countings on 
+                                    new { CameraId = cam.Id, Date = hm.Date, Time = hm.Time, Gmt = hm.Gmt } equals 
+                                    new { CameraId = ct.CameraId, Date = ct.Date, ct.Time, ct.Gmt }
                                  where ct.Date == queryDate
                                  select new
                                  {
@@ -36,7 +37,7 @@ namespace Mbk.Dal.Repositories
                                      Date = ct.Date,
                                      Time = ct.Time,
                                      Density = hm.Density,
-                                     Population = ct.Population,
+                                     Population = 0,
                                      Gmt = ct.Gmt
                                  };
 

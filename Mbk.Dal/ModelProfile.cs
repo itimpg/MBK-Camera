@@ -25,6 +25,8 @@ namespace Mbk.Dal
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => ToDateString(src.DateTime)))
                 .ForMember(dest => dest.Time, opt => opt.MapFrom(src => ToTimeString(src.DateTime)))
                 .ForMember(dest => dest.Gmt, opt => opt.MapFrom(src => ToTimeString(src.Gmt)));
+
+            CreateMap<CountingDetail, CountingDetailModel>().ReverseMap();
         }
     }
 }

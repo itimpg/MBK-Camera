@@ -9,6 +9,12 @@ namespace Mbk.Dal
     [Table("Counting")]
     public partial class Counting
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Counting()
+        {
+            CountingDetails = new HashSet<CountingDetail>();
+        }
+
         public long Id { get; set; }
 
         public long CameraId { get; set; }
@@ -29,6 +35,7 @@ namespace Mbk.Dal
         [StringLength(2147483647)]
         public string RawData { get; set; }
 
-        public decimal Population { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CountingDetail> CountingDetails { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Mbk.Model
 {
@@ -9,6 +10,6 @@ namespace Mbk.Model
         public DateTime DateTime { get; set; }
         public TimeSpan Gmt { get; set; }
         public string RawData { get; set; }
-        public decimal Population { get; set; }
+        public IList<CountingDetailModel> CountingDetails { get; set; }
     }
 }
