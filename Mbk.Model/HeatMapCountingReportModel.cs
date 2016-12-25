@@ -25,6 +25,7 @@ namespace Mbk.Model
 
     public class CountingReportDetailModel
     {
+        public int LineNo { get; set; }
         public long A { get; set; }
         public long B { get; set; }
     }

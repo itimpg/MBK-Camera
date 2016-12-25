@@ -37,8 +37,7 @@ namespace Mbk.Dal.Repositories
                                      Date = ct.Date,
                                      Time = ct.Time,
                                      Density = hm.Density,
-                                     Countings = ct.CountingDetails
-                                        .Select(x => new { A = x.A, B = x.B }),
+                                     Countings = ct.CountingDetails,
                                      Gmt = ct.Gmt
                                  };
 
@@ -65,7 +64,12 @@ namespace Mbk.Dal.Repositories
                                                 Period = i / separateValue,
                                                 Time = ConvertToTime(x.Time).Add(ConvertToTime(x.Gmt)),
                                                 Density = x.Density,
-                                                Countings = x.Countings
+                                                Countings = x.Countings.Select((a, index) => new CountingReportDetailModel
+                                                {
+                                                    LineNo = index,
+                                                    A = a.A,
+                                                    B = a.B
+                                                }),
                                             })
                                             .GroupBy(x => x.Period)
                                             .Select(g2 => new
@@ -73,11 +77,14 @@ namespace Mbk.Dal.Repositories
                                                 StartTime = g2.Min(a => a.Time),
                                                 EndTime = g2.Max(a => a.Time),
                                                 Density = g2.Sum(a => a.Density),
-                                                Countings = g2.Select(a => new CountingReportDetailModel
-                                                {
-                                                    A = a.Countings.Sum(x => x.A),
-                                                    B = a.Countings.Sum(x => x.B),
-                                                })
+                                                Countings = g2.SelectMany(a => a.Countings)
+                                                        .GroupBy(b => b.LineNo)
+                                                        .Select(g3 => new CountingReportDetailModel
+                                                        {
+                                                            LineNo = g3.Key,
+                                                            A = g3.Sum(b => b.A),
+                                                            B = g3.Sum(b => b.B)
+                                                        })
                                             })
                                     })
                                     .OrderBy(x => x.Id);
