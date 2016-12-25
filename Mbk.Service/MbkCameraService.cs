@@ -101,11 +101,12 @@ namespace Mbk.Service
                     try
                     {
                         _dataManager.CollectDataAsync(config, cam).Wait();
-                        _logger.Info($"Get data from camera \t{cam.IpAddress} is successful.");
+                        _logger.Info($"Get data from IP {cam.IpAddress} is successful.");
                     }
-                    catch (Exception ex)
+                    catch (AggregateException ex)
                     {
-                        _logger.Error($"Get data from camera \t{cam.IpAddress} has error occurred, \t{ex.Message}");
+                        var errorMessage = ex.InnerException.Message;
+                        _logger.Error($"Cannot get data from IP {cam.IpAddress}: {errorMessage}");
                     }
                 }
             }
@@ -122,8 +123,22 @@ namespace Mbk.Service
                 _configManager.CheckConfig(_config);
 
                 ScheduleConfigModel config = (ScheduleConfigModel)obj;
-                int totalCamera = _reportManager.GenerateDataReportAsync(config.Location, DateTime.Today, config.Period).Result;
-                _logger.Info($"Report for {DateTime.Today.ToString("dd/MM/yyyy")} was created successful for {totalCamera} camera(s)");
+
+                var reportDate = DateTime.Now.AddHours(-7).Date;
+                int totalCamera = _reportManager.GenerateDataReportAsync(config.Location, reportDate, config.Period).Result;
+                if (totalCamera > 0)
+                {
+                    _logger.Info($"Report for {reportDate.ToString("dd/MM/yyyy")} was created successful for {totalCamera} camera(s)");
+                }
+                else
+                {
+                    _logger.Info("No data for create report");
+                }
+            }
+            catch (AggregateException ex)
+            {
+                var errorMessage = ex.InnerException.Message;
+                _logger.Error($"Cannot crete report: {errorMessage}");
             }
             catch (Exception ex)
             {
