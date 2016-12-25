@@ -25,8 +25,8 @@ namespace Mbk.Dal.Repositories
                     string queryDate = ToDateString(reportDate);
                     var dbData = from cam in db.Cameras
                                  join hm in db.HeatMaps on cam.Id equals hm.CameraId
-                                 join ct in db.Countings on 
-                                    new { CameraId = cam.Id, Date = hm.Date, Time = hm.Time, Gmt = hm.Gmt } equals 
+                                 join ct in db.Countings on
+                                    new { CameraId = cam.Id, Date = hm.Date, Time = hm.Time, Gmt = hm.Gmt } equals
                                     new { CameraId = ct.CameraId, Date = ct.Date, ct.Time, ct.Gmt }
                                  where ct.Date == queryDate
                                  select new
@@ -37,7 +37,8 @@ namespace Mbk.Dal.Repositories
                                      Date = ct.Date,
                                      Time = ct.Time,
                                      Density = hm.Density,
-                                     Population = 0,
+                                     Countings = ct.CountingDetails
+                                        .Select(x => new { A = x.A, B = x.B }),
                                      Gmt = ct.Gmt
                                  };
 
@@ -64,7 +65,7 @@ namespace Mbk.Dal.Repositories
                                                 Period = i / separateValue,
                                                 Time = ConvertToTime(x.Time).Add(ConvertToTime(x.Gmt)),
                                                 Density = x.Density,
-                                                Population = x.Population
+                                                Countings = x.Countings
                                             })
                                             .GroupBy(x => x.Period)
                                             .Select(g2 => new
@@ -72,7 +73,11 @@ namespace Mbk.Dal.Repositories
                                                 StartTime = g2.Min(a => a.Time),
                                                 EndTime = g2.Max(a => a.Time),
                                                 Density = g2.Sum(a => a.Density),
-                                                Population = g2.Sum(a => a.Population)
+                                                Countings = g2.Select(a => new CountingReportDetailModel
+                                                {
+                                                    A = a.Countings.Sum(x => x.A),
+                                                    B = a.Countings.Sum(x => x.B),
+                                                })
                                             })
                                     })
                                     .OrderBy(x => x.Id);
@@ -90,7 +95,7 @@ namespace Mbk.Dal.Repositories
                                             detail.StartTime.Add(TimeSpan.FromMinutes(1)).ToString("hh\\:mm"),
                                             detail.EndTime.Add(TimeSpan.FromMinutes(15)).ToString("hh\\:mm")),
                                         Density = detail.Density,
-                                        Population = detail.Population
+                                        Countings = detail.Countings.ToList(),
                                     }).ToList()
                                 });
 

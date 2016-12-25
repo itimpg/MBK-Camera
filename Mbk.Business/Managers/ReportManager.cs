@@ -21,6 +21,82 @@ namespace Mbk.Business
             _reportRepository = reportRepository;
         }
 
+        private ExcelWorksheet InitHeatmap(ExcelPackage package)
+        {
+            var heatmapSheet = package.Workbook.Worksheets.Add("รายงานความหนาแน่นของคน");
+
+            int[] widths = new[] { 10, 10, 25, 20, 20, 25 };
+            int[] alignCenterColumns = new[] { 1, 2, 4, 5 };
+            for (int i = 1; i <= widths.Length; i++)
+            {
+                heatmapSheet.Column(i).Width = widths[i - 1];
+                heatmapSheet.Column(i).Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                if (alignCenterColumns.Contains(i))
+                {
+                    heatmapSheet.Column(i).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+            }
+            var headers = heatmapSheet.Cells[1, 1, 2, 6];
+            headers.Style.Font.Bold = true;
+            headers.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headers.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+            headers.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+            string[] columns = new[] { "กล้องที่", "ชั้นที่", "ชื่อกล้อง", "วันที่", "เวลา" };
+            for (int i = 0; i < columns.Length; i++)
+            {
+                int col = i + 1;
+                heatmapSheet.Cells[1, col].Value = columns[i];
+                heatmapSheet.Cells[1, col, 2, col].Merge = true;
+            }
+
+            heatmapSheet.Cells[1, 6].Value = "ค่าเฉลี่ย";
+            heatmapSheet.Cells[2, 6].Value = "ความหนาแน่นของคน";
+
+            return heatmapSheet;
+        }
+        private ExcelWorksheet InitCounting(ExcelPackage package)
+        {
+            var countingSheet = package.Workbook.Worksheets.Add("รายงานจำนวนคน");
+
+            int[] widths = new[] { 10, 10, 25, 20, 20 };
+            int[] alignCenterColumns = new[] { 1, 2, 4, 5 };
+            for (int i = 1; i <= widths.Length; i++)
+            {
+                countingSheet.Column(i).Width = widths[i - 1];
+                countingSheet.Column(i).Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                if (alignCenterColumns.Contains(i))
+                {
+                    countingSheet.Column(i).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                }
+            }
+            var headers = countingSheet.Cells[1, 1, 2, 31];
+            headers.Style.Font.Bold = true;
+            headers.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headers.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+            headers.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+            string[] columns = new[] { "กล้องที่", "ชั้นที่", "ชื่อกล้อง", "วันที่", "เวลา" };
+            for (int i = 0; i < columns.Length; i++)
+            {
+                int col = i + 1;
+                countingSheet.Cells[1, col].Value = columns[i];
+                countingSheet.Cells[1, col, 2, col].Merge = true;
+            }
+
+            for (int i = 0; i < 12; i++)
+            {
+                int column = (i * 2) + 6;
+
+                countingSheet.Cells[1, column].Value = $"Line{i + 1}";
+                countingSheet.Cells[1, column, 1, column + 1].Merge = true;
+                countingSheet.Cells[2, column].Value = "A -> B";
+                countingSheet.Cells[2, column + 1].Value = "B -> A";
+            }
+
+            return countingSheet;
+        }
+
         public async Task<int> GenerateDataReportAsync(
             string reportLocation,
             DateTime reportDate,
@@ -34,47 +110,13 @@ namespace Mbk.Business
 
                 using (ExcelPackage package = new ExcelPackage())
                 {
-                    var index = package.Workbook.Worksheets.Add($"รายงานต่อ {timePeriod}");
-
-                    int[] widths = new[] { 10, 10, 25, 20, 20, 25, 25 };
-                    int[] alignCenterColumns = new[] { 1, 2, 4, 5 };
-                    for (int i = 1; i <= widths.Length; i++)
-                    {
-                        index.Column(i).Width = widths[i - 1];
-                        index.Column(i).Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                        if (alignCenterColumns.Contains(i))
-                        {
-                            index.Column(i).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                        }
-                    }
-                    index.Cells[1, 1, 2, 7].Style.Font.Bold = true;
-                    index.Cells[1, 1, 2, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    index.Cells[1, 1, 2, 7].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
-                    index.Cells[1, 1, 2, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-
-                    index.Cells[1, 1].Value = "กล้องที่";
-                    index.Cells[1, 1, 2, 1].Merge = true;
-
-                    index.Cells[1, 2].Value = "ชั้นที่";
-                    index.Cells[1, 2, 2, 2].Merge = true;
-
-                    index.Cells[1, 3].Value = "ชื่อกล้อง";
-                    index.Cells[1, 3, 2, 3].Merge = true;
-
-                    index.Cells[1, 4].Value = "วันที่";
-                    index.Cells[1, 4, 2, 4].Merge = true;
-
-                    index.Cells[1, 5].Value = "เวลา";
-                    index.Cells[1, 5, 2, 5].Merge = true;
-
-                    index.Cells[1, 6].Value = "ค่าเฉลี่ย";
-                    index.Cells[1, 6, 1, 7].Merge = true;
-
-                    index.Cells[2, 6].Value = "ความหนาแน่นของคน";
-                    index.Cells[2, 7].Value = "จำนวนคน";
+                    var heatmapSheet = InitHeatmap(package);
+                    var countingSheet = InitCounting(package);
 
                     int rowIndex = 3;
                     int newCamRowIndex = rowIndex;
+
+                    // loop for print data to excel
                     for (int i = 0; i < source.Count; i++)
                     {
                         var cam = source[i];
@@ -82,23 +124,37 @@ namespace Mbk.Business
                         {
                             var detail = cam.Details[j];
 
-                            index.Cells[rowIndex, 1].Value = cam.CameraNo;
-                            index.Cells[rowIndex, 2].Value = cam.CameraFloor;
-                            index.Cells[rowIndex, 3].Value = cam.CameraName;
-                            index.Cells[rowIndex, 4].Value = cam.Date;
-                            index.Cells[rowIndex, 5].Value = detail.Time;
-                            index.Cells[rowIndex, 6].Value = detail.Density;
-                            index.Cells[rowIndex, 7].Value = detail.Population;
+                            // print heatmap
+                            heatmapSheet.Cells[rowIndex, 1].Value = cam.CameraNo;
+                            heatmapSheet.Cells[rowIndex, 2].Value = cam.CameraFloor;
+                            heatmapSheet.Cells[rowIndex, 3].Value = cam.CameraName;
+                            heatmapSheet.Cells[rowIndex, 4].Value = cam.Date;
+                            heatmapSheet.Cells[rowIndex, 5].Value = detail.Time;
+                            heatmapSheet.Cells[rowIndex, 6].Value = detail.Density;
+
+                            // print counting
+                            countingSheet.Cells[rowIndex, 1].Value = cam.CameraNo;
+                            countingSheet.Cells[rowIndex, 2].Value = cam.CameraFloor;
+                            countingSheet.Cells[rowIndex, 3].Value = cam.CameraName;
+                            countingSheet.Cells[rowIndex, 4].Value = cam.Date;
+                            countingSheet.Cells[rowIndex, 5].Value = detail.Time;
+                            for (int k = 0; k < detail.Countings.Count; k++)
+                            {
+                                var counting = detail.Countings[k];
+                                int column = (k * 2) + 6;
+                                countingSheet.Cells[rowIndex, column].Value = counting.A;
+                                countingSheet.Cells[rowIndex, column + 1].Value = counting.B;
+                            }
                         }
 
-                        var ws = package.Workbook.Worksheets.Add(cam.CameraName);
-
+                        // create chart by heatmap data
+                        var ws = package.Workbook.Worksheets.Add($"กล้องที่{cam.CameraNo} {cam.CameraName}");
                         ExcelChart chart = ws.Drawings.AddChart($"chart_{i}", eChartType.ColumnClustered);
                         chart.SetPosition(1, 0, 1, 0);
                         chart.SetSize(1800, 480);
                         chart.Series.Add(
-                            index.Cells[newCamRowIndex, 6, rowIndex - 1, 6],
-                            index.Cells[newCamRowIndex, 5, rowIndex - 1, 5]);
+                            heatmapSheet.Cells[newCamRowIndex, 6, rowIndex - 1, 6],
+                            heatmapSheet.Cells[newCamRowIndex, 5, rowIndex - 1, 5]);
                         chart.Legend.Remove();
 
                         ws.Cells["B27:AC27"].Merge = true;

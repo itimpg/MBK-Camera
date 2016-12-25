@@ -77,7 +77,7 @@
                     <DataGridTextColumn Header="Item" Width="50" IsReadOnly="True" Binding="{Binding RowNumber}"/>
                     <DataGridTextColumn Binding="{Binding IpAddress}" Header="IP Address" Width="2*"/>
                     <DataGridTextColumn Binding="{Binding Floor}" Header="Floor" Width="*"/>
-                    <Controls:DataGridNumericUpDownColumn Header="m&#x00B2;" Width="2*" Binding="{Binding Height}" StringFormat="n2"  Minimum="0" />
+                    <Controls:DataGridNumericUpDownColumn Header="Sq.Meter" Width="2*" Binding="{Binding Height}" StringFormat="n2"  Minimum="0" />
                     <DataGridTextColumn Binding="{Binding Name}" Header="Camera Name" Width="2*"/>
                     <DataGridTextColumn Header="Status" Width="2*" Binding="{Binding Status}" IsReadOnly="True">
                         <DataGridTextColumn.CellStyle>

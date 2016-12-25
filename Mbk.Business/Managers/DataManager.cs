@@ -67,10 +67,11 @@ namespace Mbk.Business
                 throw;
             }
         }
-        
+
         private async Task GetHeatMap(ConfigModel config, CameraModel camera)
         {
-            string[] texts = (await GetFile(config, camera, config.HeatMapUri, config.HeatMapBufferFileName))
+            string[] texts = //(await GetFile(config, camera, config.HeatMapUri, config.HeatMapBufferFileName))
+                (await GetHeatMapMockAsync())
                 .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var heatmaps =
@@ -101,9 +102,19 @@ namespace Mbk.Business
             await _heatMapRepository.InsertAsync(heatmaps);
         }
 
+        private async Task<string> GetCountingMockAsync()
+        {
+            return await Task.Run(() => File.ReadAllText(@"C:\Users\itim\Desktop\x.txt"));
+        }
+        private async Task<string> GetHeatMapMockAsync()
+        {
+            return await Task.Run(() => File.ReadAllText(@"C:\Test\heatmap_20161225_(192-168-12-220).txt"));
+        }
+
         private async Task GetCountingAsync(ConfigModel config, CameraModel camera)
         {
-            string[] texts = (await GetFile(config, camera, config.CountingUri, config.CountingBufferFileName))
+            string[] texts = //(await GetFile(config, camera, config.CountingUri, config.CountingBufferFileName))
+                (await GetCountingMockAsync())
                .Split(new[] { "--myboundary" }, StringSplitOptions.RemoveEmptyEntries);
 
             var countings =
