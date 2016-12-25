@@ -41,25 +41,39 @@ namespace Mbk.Business
                     for (int i = 1; i <= widths.Length; i++)
                     {
                         index.Column(i).Width = widths[i - 1];
+                        index.Column(i).Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                         if (alignCenterColumns.Contains(i))
                         {
                             index.Column(i).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                         }
                     }
-                    index.Cells[1, 1, 1, 7].Style.Font.Bold = true;
-                    index.Cells[1, 1, 1, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    index.Cells[1, 1, 1, 7].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
-                    index.Cells[1, 1, 1, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    index.Cells[1, 1, 2, 7].Style.Font.Bold = true;
+                    index.Cells[1, 1, 2, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    index.Cells[1, 1, 2, 7].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                    index.Cells[1, 1, 2, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                     index.Cells[1, 1].Value = "กล้องที่";
-                    index.Cells[1, 2].Value = "ชั้นที่";
-                    index.Cells[1, 3].Value = "ชื่อกล้อง";
-                    index.Cells[1, 4].Value = "วันที่";
-                    index.Cells[1, 5].Value = "เวลา";
-                    index.Cells[1, 6].Value = "ความหนาแน่นของคน";
-                    index.Cells[1, 7].Value = "จำนวนคน";
+                    index.Cells[1, 1, 2, 1].Merge = true;
 
-                    int rowIndex = 2;
+                    index.Cells[1, 2].Value = "ชั้นที่";
+                    index.Cells[1, 2, 2, 2].Merge = true;
+
+                    index.Cells[1, 3].Value = "ชื่อกล้อง";
+                    index.Cells[1, 3, 2, 3].Merge = true;
+
+                    index.Cells[1, 4].Value = "วันที่";
+                    index.Cells[1, 4, 2, 4].Merge = true;
+
+                    index.Cells[1, 5].Value = "เวลา";
+                    index.Cells[1, 5, 2, 5].Merge = true;
+
+                    index.Cells[1, 6].Value = "ค่าเฉลี่ย";
+                    index.Cells[1, 6, 1, 7].Merge = true;
+
+                    index.Cells[2, 6].Value = "ความหนาแน่นของคน";
+                    index.Cells[2, 7].Value = "จำนวนคน";
+
+                    int rowIndex = 3;
                     int newCamRowIndex = rowIndex;
                     for (int i = 0; i < source.Count; i++)
                     {
@@ -77,7 +91,7 @@ namespace Mbk.Business
                             index.Cells[rowIndex, 7].Value = detail.Population;
                         }
 
-                        var ws = package.Workbook.Worksheets.Add($"กล้องที่ {i + 1}");
+                        var ws = package.Workbook.Worksheets.Add(cam.CameraName);
 
                         ExcelChart chart = ws.Drawings.AddChart($"chart_{i}", eChartType.ColumnClustered);
                         chart.SetPosition(1, 0, 1, 0);
