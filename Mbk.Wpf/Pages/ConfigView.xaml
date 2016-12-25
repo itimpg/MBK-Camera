@@ -24,6 +24,11 @@
         <Style x:Key="NumberCell" TargetType="DataGridCell" BasedOn="{StaticResource MetroDataGridCell}">
             <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
+        <Style x:Key="MyColumnHeader" 
+               BasedOn="{StaticResource MetroDataGridColumnHeader}" 
+               TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
+        </Style>
     </Window.Resources>
 
     <i:Interaction.Triggers>
@@ -62,6 +67,7 @@
                     Command="{Binding CheckConnectionCommand}"/>
             </Grid>
             <DataGrid Grid.Row="1" BorderBrush="Black" BorderThickness="1"
+                      ColumnHeaderStyle="{StaticResource MyColumnHeader}"
                       AutoGenerateColumns="False"
                       CanUserAddRows="False"
                       IsReadOnly="True"
@@ -69,9 +75,9 @@
                       ItemsSource="{Binding CameraCollection}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Item" Width="50" IsReadOnly="True" Binding="{Binding RowNumber}"/>
-                    <DataGridTextColumn Binding="{Binding IpAddress}" Header="Ip Address" Width="2*"/>
+                    <DataGridTextColumn Binding="{Binding IpAddress}" Header="IP Address" Width="2*"/>
                     <DataGridTextColumn Binding="{Binding Floor}" Header="Floor" Width="*"/>
-                    <Controls:DataGridNumericUpDownColumn Header="Height (Meter)" Width="2*" Binding="{Binding Height}" StringFormat="n2"  Minimum="0" />
+                    <Controls:DataGridNumericUpDownColumn Header="m&#x00B2;" Width="2*" Binding="{Binding Height}" StringFormat="n2"  Minimum="0" />
                     <DataGridTextColumn Binding="{Binding Name}" Header="Camera Name" Width="2*"/>
                     <DataGridTextColumn Header="Status" Width="2*" Binding="{Binding Status}" IsReadOnly="True">
                         <DataGridTextColumn.CellStyle>

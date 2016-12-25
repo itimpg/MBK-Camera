@@ -62,7 +62,7 @@
                     <TextBox Grid.Row="2" Grid.Column="1" Margin="2"
                              Text="{Binding Camera.Name}"/>
                     <Label Grid.Row="3" Grid.Column="0"
-                           Content="Height :"/>
+                           Content="m&#x00B2;  :"/>
                     <Controls:NumericUpDown Grid.Row="3" Grid.Column="1" Margin="2"
                                             Value="{Binding Camera.Height}"/>
                 </Grid>
