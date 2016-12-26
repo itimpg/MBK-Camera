@@ -95,8 +95,7 @@ namespace Mbk.Business
                         RawData = "Leave it empty",
                         TotalValue = x.Value.Sum(),
                         TotalCount = x.Value.Length,
-                        Density = x.Value.Length > 0 ?
-                            Math.Round((decimal)(x.Value.Sum() / x.Value.Length)) : 0,
+                        Density = x.Value.Length > 0 ? (x.Value.Sum() / x.Value.Length) : 0,
                     }).ToArray();
             await _heatMapRepository.InsertAsync(heatmaps);
         }

@@ -25,7 +25,7 @@ namespace Mbk.Business
         {
             var heatmapSheet = package.Workbook.Worksheets.Add("รายงานความหนาแน่นของคน");
 
-            int[] widths = new[] { 10, 10, 25, 20, 20, 25 };
+            int[] widths = new[] { 10, 10, 25, 20, 20, 25, 20, 38 };
             int[] alignCenterColumns = new[] { 1, 2, 4, 5 };
             for (int i = 1; i <= widths.Length; i++)
             {
@@ -36,11 +36,12 @@ namespace Mbk.Business
                     heatmapSheet.Column(i).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 }
             }
-            var headers = heatmapSheet.Cells[1, 1, 2, 6];
+            var headers = heatmapSheet.Cells[1, 1, 2, 8];
             headers.Style.Font.Bold = true;
             headers.Style.Fill.PatternType = ExcelFillStyle.Solid;
             headers.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
             headers.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            headers.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
             string[] columns = new[] { "กล้องที่", "ชั้นที่", "ชื่อกล้อง", "วันที่", "เวลา" };
             for (int i = 0; i < columns.Length; i++)
@@ -52,6 +53,12 @@ namespace Mbk.Business
 
             heatmapSheet.Cells[1, 6].Value = "ค่าเฉลี่ย";
             heatmapSheet.Cells[2, 6].Value = "ความหนาแน่นของคน";
+
+            heatmapSheet.Cells[1, 7].Value = "พื้นที่";
+            heatmapSheet.Cells[2, 7].Value = "(ตารางมตร)";
+
+            heatmapSheet.Cells[1, 8].Value = "ค่าเฉลี่ย";
+            heatmapSheet.Cells[2, 8].Value = "ความหนาแน่นของคน/พื้นที่(ตารางมตร)";
 
             return heatmapSheet;
         }
@@ -75,6 +82,7 @@ namespace Mbk.Business
             headers.Style.Fill.PatternType = ExcelFillStyle.Solid;
             headers.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
             headers.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            headers.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
             string[] columns = new[] { "กล้องที่", "ชั้นที่", "ชื่อกล้อง", "วันที่", "เวลา" };
             for (int i = 0; i < columns.Length; i++)
@@ -131,6 +139,8 @@ namespace Mbk.Business
                             heatmapSheet.Cells[rowIndex, 4].Value = cam.Date;
                             heatmapSheet.Cells[rowIndex, 5].Value = detail.Time;
                             heatmapSheet.Cells[rowIndex, 6].Value = detail.Density;
+                            heatmapSheet.Cells[rowIndex, 7].Value = detail.Area;
+                            heatmapSheet.Cells[rowIndex, 8].Value = detail.DensityPerArea;
 
                             // print counting
                             countingSheet.Cells[rowIndex, 1].Value = cam.CameraNo;

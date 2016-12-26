@@ -32,11 +32,13 @@ namespace Mbk.Dal.Repositories
                                  select new
                                  {
                                      Id = cam.Id,
+                                     CameraArea = cam.Height,
                                      CameraFloor = cam.Floor,
                                      CameraName = cam.Name,
                                      Date = ct.Date,
                                      Time = ct.Time,
-                                     Density = hm.Density,
+                                     HeatMapValue = hm.TotalValue,
+                                     HeatMapCount = hm.TotalCount,
                                      Countings = ct.CountingDetails,
                                      Gmt = ct.Gmt
                                  };
@@ -49,11 +51,12 @@ namespace Mbk.Dal.Repositories
                         case ReportPeriodType.H1: separateValue = 4; break;
                     }
                     var cameraData = dbData
-                                    .GroupBy(x => new { x.Id, x.CameraFloor, x.CameraName, x.Date })
+                                    .GroupBy(x => new { x.Id, x.CameraArea, x.CameraFloor, x.CameraName, x.Date })
                                     .AsEnumerable()
                                     .Select((g) => new
                                     {
                                         Id = g.Key.Id,
+                                        CameraArea = g.Key.CameraArea,
                                         CameraFloor = g.Key.CameraFloor,
                                         CameraName = g.Key.CameraName,
                                         Date = g.Key.Date,
@@ -63,7 +66,8 @@ namespace Mbk.Dal.Repositories
                                             {
                                                 Period = i / separateValue,
                                                 Time = ConvertToTime(x.Time).Add(ConvertToTime(x.Gmt)),
-                                                Density = x.Density,
+                                                Density = x.HeatMapCount > 0 ? 
+                                                    Math.Ceiling((decimal)x.HeatMapValue / (decimal)x.HeatMapCount) : 0,
                                                 Countings = x.Countings.Select((a, index) => new CountingReportDetailModel
                                                 {
                                                     LineNo = index,
@@ -102,6 +106,8 @@ namespace Mbk.Dal.Repositories
                                             detail.StartTime.Add(TimeSpan.FromMinutes(1)).ToString("hh\\:mm"),
                                             detail.EndTime.Add(TimeSpan.FromMinutes(15)).ToString("hh\\:mm")),
                                         Density = detail.Density,
+                                        Area = header.CameraArea,
+                                        DensityPerArea = Math.Ceiling(detail.Density / header.CameraArea),
                                         Countings = detail.Countings.ToList(),
                                     }).ToList()
                                 });

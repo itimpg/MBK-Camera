@@ -20,6 +20,8 @@ namespace Mbk.Model
     {
         public string Time { get; set; }
         public decimal Density { get; set; }
+        public decimal DensityPerArea { get; set; }
+        public decimal Area { get; set; }
         public IList<CountingReportDetailModel> Countings { get; set; }
     }
 
