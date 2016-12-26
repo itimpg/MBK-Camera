@@ -181,6 +181,20 @@ namespace Mbk.Wpf.ViewModel
             set { Set(() => Status, ref _status, value); }
         }
 
+        private string _username;
+        public string Username
+        {
+            get { return _username; }
+            set { Set(() => Username, ref _username, value); }
+        }
+
+        private string _password;
+        public string Password
+        {
+            get { return _password; }
+            set { Set(() => Password, ref _password, value); }
+        }
+
         private int _rowNumber;
         public int RowNumber
         {

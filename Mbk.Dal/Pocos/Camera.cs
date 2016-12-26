@@ -22,5 +22,11 @@ namespace Mbk.Dal
         [Required]
         [StringLength(2147483647)]
         public string IpAddress { get; set; }
+
+        [StringLength(2147483647)]
+        public string Username { get; set; }
+
+        [StringLength(2147483647)]
+        public string Password { get; set; }
     }
 }

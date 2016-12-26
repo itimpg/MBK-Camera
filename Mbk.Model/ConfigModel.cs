@@ -6,8 +6,6 @@ namespace Mbk.Model
     {
         public string ServiceName { get; set; }
         public string DatabaseSource { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
         public string HeatMapUri { get; set; }
         public string HeatMapBufferFileName { get; set; }
         public string CountingUri { get; set; }

@@ -87,6 +87,8 @@ namespace Mbk.Dal.Repositories
                     camera.Floor = model.Floor;
                     camera.Name = model.Name;
                     camera.Height = model.Height;
+                    camera.Username = model.Username;
+                    camera.Password = model.Password;
 
                     await db.SaveChangesAsync();
                 }

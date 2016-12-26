@@ -41,7 +41,7 @@ namespace Mbk.Business
 
             using (var client = new HttpClient())
             {
-                var headerVal = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{config.Username}:{config.Password}"));
+                var headerVal = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{camera.Username}:{camera.Password}"));
                 var header = new AuthenticationHeaderValue("Basic", headerVal);
                 client.DefaultRequestHeaders.Authorization = header;
 

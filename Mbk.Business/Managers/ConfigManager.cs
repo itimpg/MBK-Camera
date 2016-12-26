@@ -53,8 +53,6 @@ namespace Mbk.Business
                 {
                     ServiceName = DefaultServiceName,
                     DatabaseSource = DefaultDatabaseFile,
-                    Username = "admin",
-                    Password = "admin12345",
                     HeatMapUri = "http://{0}/cgi-bin/get_metadata?kind=heatmap_mov_info&mode=multi&year={1}&month={2}&date={3}&hour=0&days=1",
                     HeatMapBufferFileName = "heatmap",
                     CountingUri = "http://{0}/cgi-bin/get_metadata?kind=movcnt_info&mode=multi&year={1}&month={2}&date={3}&hour=0&days=1",

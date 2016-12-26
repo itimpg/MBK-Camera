@@ -7,5 +7,7 @@
         public string Floor { get; set; }
         public string Name { get; set; }
         public decimal Height { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -12,7 +12,7 @@
       d:DesignHeight="300" d:DesignWidth="300"
       EnableDWMDropShadow="True"
       ResizeMode="NoResize"
-      Height="200"
+      Height="260"
       Width="380"
       Title="{Binding Title}"
       WindowStartupLocation="CenterOwner"
@@ -47,6 +47,8 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
 
                     <Label Grid.Row="0" Grid.Column="0" 
@@ -65,6 +67,15 @@
                            Content="Sq.Meter :"/>
                     <Controls:NumericUpDown Grid.Row="3" Grid.Column="1" Margin="2"
                                             Value="{Binding Camera.Height}"/>
+                    <Label Grid.Row="4" Grid.Column="0"
+                           Content="Username : "/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="2"
+                             Text="{Binding Camera.Username}"/>
+                    
+                    <Label Grid.Row="5" Grid.Column="0"
+                           Content="Password : "/>
+                    <TextBox Grid.Row="5" Grid.Column="1" Margin="2"
+                             Text="{Binding Camera.Password}"/>
                 </Grid>
             </Grid>
 
