@@ -67,7 +67,7 @@ namespace Mbk.Dal.Repositories
                                                 Period = i / separateValue,
                                                 Time = ConvertToTime(x.Time).Add(ConvertToTime(x.Gmt)),
                                                 Density = x.HeatMapCount > 0 ? 
-                                                    Math.Ceiling((decimal)x.HeatMapValue / (decimal)x.HeatMapCount) : 0,
+                                                    Math.Round((decimal)x.HeatMapValue / (decimal)x.HeatMapCount, 2) : 0,
                                                 Countings = x.Countings.Select((a, index) => new CountingReportDetailModel
                                                 {
                                                     LineNo = index,
@@ -107,7 +107,7 @@ namespace Mbk.Dal.Repositories
                                             detail.EndTime.Add(TimeSpan.FromMinutes(15)).ToString("hh\\:mm")),
                                         Density = detail.Density,
                                         Area = header.CameraArea,
-                                        DensityPerArea = Math.Ceiling(detail.Density / header.CameraArea),
+                                        DensityPerArea = Math.Round(detail.Density / header.CameraArea , 2),
                                         Countings = detail.Countings.ToList(),
                                     }).ToList()
                                 });
