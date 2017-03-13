@@ -83,7 +83,7 @@ Name: "{commonprograms}\MBK Camera Reporter"; Filename: "{app}\Mbk.Wpf.exe"
 Name: "{commondesktop}\MBK Camera Reporter"; Filename: "{app}\Mbk.Wpf.exe"; Tasks: desktopicon
 
 [Run]
-Filename:"{cmd}"; Parameters:"/c sc create ""MBK Camera Service"" binPath= ""{app}\Mbk.Service.exe"""
+Filename: "sc.exe"; Parameters: "create ""MBK Camera Service"" start= auto DisplayName= ""MBK Camera Service"" binPath= ""{app}\Mbk.Service.exe"""; Flags: runhidden 
 
 [UninstallRun]    
 Filename:"{cmd}"; Parameters:"/c sc stop ""MBK Camera Service"""
